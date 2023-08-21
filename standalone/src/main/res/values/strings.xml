@@ -24,6 +24,6 @@
     <string name="fragment_home_button_open_camera">Open Camera</string>
     <string name="fragment_camera_title">Camera</string>
     <string name="fragment_camera_error_permissions_not_granter">Permissions not granted by the user.</string>
-
+    <string name="fragment_home_button_open_notification_permissions">Open Notification Permissions</string>
 
 </resources>

@@ -37,4 +37,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <Button
+        android:id="@+id/fragment_home_button_open_notification_permissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="210dp"
+        android:layout_margin="4dp"
+        android:text="@string/fragment_home_button_open_notification_permissions"
+        android:drawableTop="@drawable/ic_action_notification"
+        app:layout_constraintStart_toStartOf="@+id/fragment_home_button_6_digits_code"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_home_button_6_digits_code"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_home_button_open_camera" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
