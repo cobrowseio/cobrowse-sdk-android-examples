@@ -13,7 +13,8 @@
 
     <!-- Preferences -->
 
-    <string name="fragment_settings_title_license">Cobrowse.io license</string>
+    <string name="fragment_settings_title_cobrowse">Cobrowse.io configuration</string>
+    <string name="fragment_settings_pref_api">API endpoint</string>
     <string name="fragment_settings_pref_license">License key</string>
     <string name="fragment_settings_title_screenshare">Screensharing</string>
     <string name="fragment_settings_pref_hide_session_controls_off">Cobrowse.io has visual indication of a session</string>

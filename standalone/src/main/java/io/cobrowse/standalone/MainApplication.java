@@ -39,15 +39,16 @@ public class MainApplication extends MultiDexApplication
 
         CobrowseIO.instance().setDelegate(this);
 
-        String license = CobrowsePreferences.getLicense(this);
-        CobrowseIO.instance().license(license);
-        CobrowseIO.instance().start(this);
+        CobrowseIO.instance().api(CobrowsePreferences.getApi(this));
+        CobrowseIO.instance().license(CobrowsePreferences.getLicense(this));
+        CobrowseIO.instance().start();
     }
 
-    private void updateCobrowseLicense() {
+    private void updateCobrowseConfiguration() {
         CobrowseIO.instance().stop();
+        CobrowseIO.instance().api(CobrowsePreferences.getApi(this));
         CobrowseIO.instance().license(CobrowsePreferences.getLicense(this));
-        CobrowseIO.instance().start(this);
+        CobrowseIO.instance().start();
     }
 
     private void updateCobrowseSessionControls() {
@@ -126,8 +127,9 @@ public class MainApplication extends MultiDexApplication
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
+            case CobrowsePreferences.KEY_API:
             case CobrowsePreferences.KEY_LICENSE:
-                updateCobrowseLicense();
+                updateCobrowseConfiguration();
                 break;
             case CobrowsePreferences.KEY_HIDE_SESSION_CONTOLS:
                 updateCobrowseSessionControls();
