@@ -20,6 +20,7 @@ import io.cobrowse.CobrowseIO
 import io.cobrowse.sample.R
 import io.cobrowse.sample.databinding.FragmentAccountBinding
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
+import io.cobrowse.sample.ui.ICobrowseRedactionContainer
 import io.cobrowse.sample.ui.login.LoginActivity
 
 /**
@@ -92,6 +93,8 @@ class AccountFragment : Fragment(), CobrowseIO.Redacted  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? ICobrowseRedactionContainer)?.notifyFragmentViewCreated(this)
+
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -109,6 +112,11 @@ class AccountFragment : Fragment(), CobrowseIO.Redacted  {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    override fun onDestroyView() {
+        (activity as? ICobrowseRedactionContainer)?.notifyFragmentViewDestroyed(this)
+        super.onDestroyView()
     }
 
     private fun updateUiWithCobrowseCode(code: String) {

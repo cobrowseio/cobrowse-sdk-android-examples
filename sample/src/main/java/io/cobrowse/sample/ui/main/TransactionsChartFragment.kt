@@ -36,6 +36,7 @@ import io.cobrowse.sample.data.getAndroidLogTag
 import io.cobrowse.sample.data.model.Transaction
 import io.cobrowse.sample.databinding.FragmentTransactionsChartBinding
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
+import io.cobrowse.sample.ui.ICobrowseRedactionContainer
 import io.cobrowse.sample.ui.onSizeChange
 
 /**
@@ -84,6 +85,8 @@ class TransactionsChartFragment : Fragment(), CobrowseIO.Redacted, CobrowseIO.Un
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? ICobrowseRedactionContainer)?.notifyFragmentViewCreated(this)
+
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -119,6 +122,11 @@ class TransactionsChartFragment : Fragment(), CobrowseIO.Redacted, CobrowseIO.Un
             resizeChartSummary()
         }
         askNotificationPermission()
+    }
+
+    override fun onDestroyView() {
+        (activity as? ICobrowseRedactionContainer)?.notifyFragmentViewDestroyed(this)
+        super.onDestroyView()
     }
 
     private fun askNotificationPermission() {

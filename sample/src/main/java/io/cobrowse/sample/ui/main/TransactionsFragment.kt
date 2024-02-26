@@ -15,6 +15,7 @@ import io.cobrowse.sample.data.model.Transaction
 import io.cobrowse.sample.data.model.detailsUrl
 import io.cobrowse.sample.databinding.FragmentTransactionsBinding
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
+import io.cobrowse.sample.ui.ICobrowseRedactionContainer
 import io.cobrowse.sample.ui.RecyclerViewHeaderItemDecoration
 import io.cobrowse.sample.ui.main.TransactionsRecyclerViewAdapter.ListItem.Companion.TYPE_MONTH_AND_YEAR
 
@@ -51,12 +52,19 @@ class TransactionsFragment : Fragment(), CobrowseIO.Redacted {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? ICobrowseRedactionContainer)?.notifyFragmentViewCreated(this)
+
         if (viewModel.allTransactionsResult.isInitialized
             && viewModel.allTransactionsResult.value?.isEmpty() == false) {
             updateTransactions(viewModel.allTransactionsResult.value!!)
         } else {
             viewModel.loadAllTransactions()
         }
+    }
+
+    override fun onDestroyView() {
+        (activity as? ICobrowseRedactionContainer)?.notifyFragmentViewDestroyed(this)
+        super.onDestroyView()
     }
 
     private fun updateTransactions(items: List<Transaction>) {

@@ -14,12 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.postDelayed
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -34,12 +32,12 @@ import io.cobrowse.Session
 import io.cobrowse.sample.R
 import io.cobrowse.sample.data.CobrowseSessionDelegate
 import io.cobrowse.sample.databinding.ActivityMainBinding
+import io.cobrowse.sample.ui.CobrowseRedactionContainer
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
+import io.cobrowse.sample.ui.ICobrowseRedactionContainer
 import io.cobrowse.sample.ui.ToolbarNotchTreatment
 import io.cobrowse.sample.ui.actionBarSize
 import io.cobrowse.sample.ui.canPopNavigation
-import io.cobrowse.sample.ui.collectCobrowseRedactedViews
-import io.cobrowse.sample.ui.collectCobrowseUnredactedViews
 import io.cobrowse.sample.ui.dpToPx
 import io.cobrowse.sample.ui.getThemeColor
 import io.cobrowse.sample.ui.login.LoginActivity
@@ -48,7 +46,10 @@ import io.cobrowse.sample.ui.popNavigation
 /**
  * Activity that hosts all fragments when user is logged in.
  */
-class MainActivity : AppCompatActivity(), CobrowseIO.Redacted, CobrowseIO.Unredacted {
+class MainActivity : AppCompatActivity(),
+    CobrowseIO.Redacted,
+    CobrowseIO.Unredacted,
+    ICobrowseRedactionContainer by CobrowseRedactionContainer() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity(), CobrowseIO.Redacted, CobrowseIO.Unreda
                 return false
             }
         })
-        menuInflater.inflate(R.menu.menu_main_host, actions.menu as MenuBuilder)
+        menuInflater.inflate(R.menu.menu_main_host, actions.menu)
         actions.menu.findItem(R.id.end_cobrowse_session)?.let {
             it.icon?.constantState?.newDrawable()?.let { newDrawable ->
                 DrawableCompat.setTint(newDrawable, ContextCompat.getColor(this, R.color.primaryColor))
@@ -318,18 +319,16 @@ class MainActivity : AppCompatActivity(), CobrowseIO.Redacted, CobrowseIO.Unreda
     }
 
     override fun redactedViews(): MutableList<View> {
-        val redacted = navHostFragmentMain.childFragmentManager.collectCobrowseRedactedViews()
-        // Also redact views from the bottom sheet navigation (if any)
-        redacted.addAll(navHostFragmentBottomSheet.childFragmentManager.collectCobrowseRedactedViews())
+        val redacted = mutableListOf<View>()
+        redacted.addAll(collectRedactedViewsInFragments())
         return redacted
     }
 
     override fun unredactedViews(): MutableList<View> {
         return if (CobrowseSessionDelegate.isRedactionByDefaultEnabled(this)) {
-            val unredacted = navHostFragmentMain.childFragmentManager.collectCobrowseUnredactedViews()
-            // Also unredact views from the bottom sheet navigation (if any)
-            unredacted.addAll(navHostFragmentBottomSheet.childFragmentManager.collectCobrowseUnredactedViews())
-            unredacted
+            val unredacted = mutableListOf<View>()
+            unredacted.addAll(collectUnredactedViewsInFragments())
+            return unredacted
         } else {
             mutableListOf()
         }
