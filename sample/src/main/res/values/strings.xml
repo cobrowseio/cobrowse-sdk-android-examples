@@ -25,6 +25,7 @@
     <string name="transaction_detail_subtitle">%1$s at %2$s</string>
     <string name="transaction_detail_subtitle_alt">%1$s %2$s, %3$s at %4$s</string>
     <string name="button_agent_present">Agent present mode</string>
+    <string name="button_activate_accessibility_service">Open Accessibility Settings</string>
     <string name="button_get_session_code">Get session code</string>
     <string name="textview_balance_header">Balance</string>
     <string name="fragment_transaction_webview">Transaction</string>
@@ -37,4 +38,11 @@
     <string name="settings_item_unredaction_summary_off">Everything is visible for the agent except for redacted views.</string>
     <string name="settings_item_unredaction_summary_on">Everything is hidden from the agent except for unredacted views.</string>
     <string name="menu_item_settings">Settings</string>
+    <string name="accessibility_warning_title">Accessibility Service</string>
+    <string name="accessibility_warning_message">The accessibility setting is used to enhance the user experience trough customer support. This setting is required for the remote control of the device with the user\'s permission. Cobrowse.io doesn\'t collect or store any personal and sensitive data. You can always activate or deactivate this feature.</string>
+    <string name="accessibility_warning_button_cancel">Cancel</string>
+    <string name="accessibility_warning_button_ok">Open Accessibility Settings</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_url" translatable="false">https://cobrowse.io/privacy</string>
+    <string name="button_activate_accessibility_service_description">Enable or disable usage of the Accessibility API</string>
 </resources>

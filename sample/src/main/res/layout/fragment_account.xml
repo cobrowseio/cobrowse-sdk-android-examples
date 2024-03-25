@@ -43,12 +43,23 @@
 
     <Button
         style="@style/Theme.CobrowseioStandalone.Button.NoBackground"
+        android:id="@+id/privacy_policy"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_policy"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"  />
+
+    <Button
+        style="@style/Theme.CobrowseioStandalone.Button.NoBackground"
         android:id="@+id/log_out"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:text="@string/log_out"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/privacy_policy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"  />
 

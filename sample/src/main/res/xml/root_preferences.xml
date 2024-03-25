@@ -4,9 +4,17 @@
 
         <SwitchPreferenceCompat
             app:key="isRedactionByDefaultEnabled"
+            app:icon="@drawable/ic_eye"
             app:summaryOff="@string/settings_item_unredaction_summary_off"
             app:summaryOn="@string/settings_item_unredaction_summary_on"
             app:title="@string/settings_item_unredaction" />
+
+
+        <Preference
+            app:title="@string/button_activate_accessibility_service"
+            app:key="accessibilityService"
+            app:icon="@drawable/ic_settings_remote"
+            app:summary="@string/button_activate_accessibility_service_description" />
 
     </PreferenceCategory>
 

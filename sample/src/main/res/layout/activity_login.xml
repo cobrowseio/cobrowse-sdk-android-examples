@@ -91,16 +91,25 @@
         app:layout_constraintTop_toBottomOf="@+id/login"
         app:layout_constraintVertical_bias="0.3" />
 
-
     <TextView
         android:id="@+id/welcome_secondary"
-        android:layout_marginBottom="16dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/login_welcome_secondary"
+        app:layout_constraintBottom_toTopOf="@id/privacy_policy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        style="@style/Theme.CobrowseioStandalone.Button.NoBackground.Small"
+        android:id="@+id/privacy_policy"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_policy"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"  />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,12 @@
 package io.cobrowse.sample.ui.settings
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.cobrowse.sample.R
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
@@ -22,5 +27,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
+
+        findPreference<Preference?>("accessibilityService")?.let { button ->
+            button.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                activity?.let {
+                    with(AlertDialog.Builder(it).create()) {
+                        this.setCancelable(false)
+                        this.setTitle(getString(R.string.accessibility_warning_title))
+                        this.setMessage(getString(R.string.accessibility_warning_message))
+                        this.setCancelable(true)
+                        this.setButton(
+                            DialogInterface.BUTTON_NEGATIVE,
+                            getString(R.string.accessibility_warning_button_cancel)) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        this.setButton(
+                            DialogInterface.BUTTON_POSITIVE,
+                            getString(R.string.accessibility_warning_button_ok)) { dialog, _ ->
+                            dialog.dismiss()
+                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                            startActivity(intent)
+                        }
+                        this.show()
+                    }
+                }
+                return@OnPreferenceClickListener true
+            }
+        }
+
     }
 }

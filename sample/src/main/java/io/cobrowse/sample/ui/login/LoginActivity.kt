@@ -2,6 +2,7 @@ package io.cobrowse.sample.ui.login
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,6 +14,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -128,6 +130,13 @@ class LoginActivity : AppCompatActivity(), CobrowseIO.Redacted {
         loginViewModel.cobrowseDelegate.current.observe(this@LoginActivity, Observer {
             updateUiWithSession(it)
         })
+
+        val privacyPolicy = binding.privacyPolicy
+        privacyPolicy.setOnClickListener {
+            CustomTabsIntent.Builder()
+                .build()
+                .launchUrl(this, Uri.parse(getString(R.string.privacy_policy_url)))
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

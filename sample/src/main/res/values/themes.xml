@@ -50,6 +50,9 @@
         <item name="android:backgroundTint">@null</item>
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
+    <style name="Theme.CobrowseioStandalone.Button.NoBackground.Small" parent="Theme.CobrowseioStandalone.Button.NoBackground">
+        <item name="android:textSize">12sp</item>
+    </style>
 
     <style name="Theme.CobrowseioStandalone.BottomSheet" parent="Widget.MaterialComponents.BottomSheet">
         <item name="shapeAppearanceOverlay">@style/Theme.CobrowseioStandalone.CustomShapeAppearanceOverlay</item>

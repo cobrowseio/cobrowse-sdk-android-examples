@@ -1,6 +1,7 @@
 package io.cobrowse.sample.ui.main
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -21,6 +23,7 @@ import io.cobrowse.sample.R
 import io.cobrowse.sample.databinding.FragmentAccountBinding
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.ui.login.LoginActivity
+
 
 /**
  * Fragment that displays the information about user who is currently logged in, and provides
@@ -78,6 +81,15 @@ class AccountFragment : Fragment(), CobrowseIO.Redacted  {
         val getSessionCode = binding.getSessionCode
         getSessionCode.setOnClickListener {
             viewModel.requestSessionCode()
+        }
+
+        val privacyPolicy = binding.privacyPolicy
+        privacyPolicy.setOnClickListener {
+            activity?.let {
+                CustomTabsIntent.Builder()
+                    .build()
+                    .launchUrl(it, Uri.parse(getString(R.string.privacy_policy_url)))
+            }
         }
 
         val agentPresent = binding.agentPresentMode
