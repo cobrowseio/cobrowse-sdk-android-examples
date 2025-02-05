@@ -11,7 +11,6 @@ import androidx.preference.PreferenceFragmentCompat
 import io.cobrowse.CobrowseAccessibilityService
 import io.cobrowse.sample.R
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
-import io.cobrowse.ui.CobrowseActivity
 
 /**
  * Fragment that allows user to modify persistent preferences.
@@ -33,7 +32,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference?>("accessibilityService")?.let { button ->
             button.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 activity?.let {
-                    if (CobrowseAccessibilityService.isRunning(it)) {
+                    if (CobrowseAccessibilityService.isRunning()) {
                         openAccessibilitySettings()
                         return@OnPreferenceClickListener true
                     }
