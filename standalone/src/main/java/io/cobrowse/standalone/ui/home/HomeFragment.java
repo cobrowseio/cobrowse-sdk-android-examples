@@ -30,8 +30,7 @@ public class HomeFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         root.findViewById(R.id.fragment_home_button_6_digits_code).setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), io.cobrowse.ui.CobrowseActivity.class);
-            requireActivity().startActivity(intent);
+            Navigation.findNavController(v).navigate(R.id.action_nav_home_to_cobrowse_code);
         });
         root.findViewById(R.id.fragment_home_button_open_camera).setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(

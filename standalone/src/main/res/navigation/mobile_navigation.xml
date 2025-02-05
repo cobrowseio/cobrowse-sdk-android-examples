@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_legacy_camera"
             app:destination="@id/nav_legacy_camera" />
+        <action
+            android:id="@+id/action_nav_home_to_cobrowse_code"
+            app:destination="@id/nav_cobrowse_code" />
     </fragment>
 
     <fragment
@@ -27,11 +30,18 @@
         android:id="@+id/nav_camera"
         android:name="io.cobrowse.standalone.ui.camera.CameraFragment"
         android:label="@string/fragment_camera_title"
-        tools:layout="@layout/fragment_camera" />
+        tools:layout="@layout/fragment_camera"
+        tools:targetApi="lollipop" />
 
     <fragment
         android:id="@+id/nav_legacy_camera"
         android:name="io.cobrowse.standalone.ui.camera.LegacyCameraFragment"
         android:label="@string/fragment_camera_title"
         tools:layout="@layout/fragment_legacy_camera" />
+
+    <fragment
+        android:id="@+id/nav_cobrowse_code"
+        android:name="io.cobrowse.standalone.ui.sessioncode.CobrowseCodeFragment"
+        android:label="@string/fragment_cobrowse_code"
+        tools:layout="@layout/fragment_cobrowse_code" />
 </navigation>

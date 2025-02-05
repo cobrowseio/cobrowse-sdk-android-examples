@@ -50,7 +50,7 @@ public class MainApplication extends MultiDexApplication
 
         if (FirebaseApp.getApps(this).size() > 0) {
             FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult
-                    -> CobrowseIO.instance().setDeviceToken(MainApplication.this, instanceIdResult.getToken()));
+                    -> CobrowseIO.instance().setDeviceToken(instanceIdResult.getToken()));
         } else {
             Log.e(TAG, "Firebase app is not initialized. Did you copy your `google-services.json` file?");
         }

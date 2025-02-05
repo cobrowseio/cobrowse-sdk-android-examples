@@ -12,7 +12,6 @@
     <string name="activity_main_menu_settings">Settings</string>
 
     <!-- Preferences -->
-
     <string name="fragment_settings_title_cobrowse">Cobrowse.io configuration</string>
     <string name="fragment_settings_pref_api">API endpoint</string>
     <string name="fragment_settings_pref_license">License key</string>
@@ -25,5 +24,11 @@
     <string name="fragment_camera_title">Camera</string>
     <string name="fragment_camera_error_permissions_not_granter">Permissions not granted by the user.</string>
     <string name="fragment_home_button_open_notification_permissions">Open Notification Permissions</string>
+    <string name="fragment_cobrowse_code">Cobrowse Session Code</string>
+
+    <!-- Cobrowse.io 6-digit code UI -->
+    <string name="cobrowse_code_display_description">Provide this code to your support agent to begin screen sharing.</string>
+    <string name="cobrowse_manage_session_description">You\'re sharing screens from this app with a support agent.</string>
+    <string name="cobrowse_error_generic">Sorry, something went wrong. Check you\'re online and try again.</string>
 
 </resources>
