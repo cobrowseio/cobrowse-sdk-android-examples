@@ -21,7 +21,7 @@ jobs:
       - name: Create a new pull request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILES_TO_COMMIT: sample/build.gradle
+          FILES_TO_COMMIT: sample/build.gradle standalone/build.gradle
         run: |
           if [[ `git status --porcelain $FILES_TO_COMMIT` ]]; then
             # Commit as Github Actions Bot
