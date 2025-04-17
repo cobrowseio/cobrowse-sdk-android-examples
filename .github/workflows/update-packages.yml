@@ -24,8 +24,10 @@ jobs:
           NEW_BRANCH_NAME: feature/update_packages_${{ github.run_id }}
         run: |
           if [[ `git status --porcelain $FILES_TO_COMMIT` ]]; then
-            git config --local user.name "Cobrowse.io Bot"
-            git config --local user.email "github@cobrowse.io"
+            # Commit as Github Actions Bot
+            # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git checkout -b $NEW_BRANCH_NAME
             git add $FILES_TO_COMMIT
             git commit -m "feat: update Cobrowse.io SDK"
