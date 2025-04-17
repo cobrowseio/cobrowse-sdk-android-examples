@@ -1,4 +1,4 @@
-name: Update Cobrowse.io SDK and create a pull request if necessary
+name: Update Cobrowse.io SDK and commit the changes
 
 on: workflow_dispatch
 
@@ -18,7 +18,7 @@ jobs:
           sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" sample/build.gradle
           sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" standalone/build.gradle
       # If the SDK was updated, commit the changes
-      - name: Create a new pull request
+      - name: Commit the changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILES_TO_COMMIT: sample/build.gradle standalone/build.gradle
