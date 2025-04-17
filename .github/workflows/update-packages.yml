@@ -16,23 +16,21 @@ jobs:
         run: |
           COBROWSE_VERSION=$(wget -O - -o /dev/null https://raw.githubusercontent.com/cobrowseio/cobrowse-sdk-android-binary/master/io/cobrowse/cobrowse-sdk-android/maven-metadata.xml | grep -Po '(?<=<version>)([0-9\.]+(-SNAPSHOT)?)' | sort --version-sort -r| head -n 1)
           sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" sample/build.gradle
-      # If the SDK was updated, commit the changes and open a new pull request
+          sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" standalone/build.gradle
+      # If the SDK was updated, commit the changes
       - name: Create a new pull request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILES_TO_COMMIT: sample/build.gradle
-          NEW_BRANCH_NAME: feature/update_packages_${{ github.run_id }}
         run: |
           if [[ `git status --porcelain $FILES_TO_COMMIT` ]]; then
             # Commit as Github Actions Bot
             # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git checkout -b $NEW_BRANCH_NAME
             git add $FILES_TO_COMMIT
             git commit -m "feat: update Cobrowse.io SDK"
-            git push origin $NEW_BRANCH_NAME
-            gh pr create -B master -H $NEW_BRANCH_NAME --title 'Update Cobrowse.io SDK' --body ''
+            git push
           else
             echo "No changes to commit"
           fi
