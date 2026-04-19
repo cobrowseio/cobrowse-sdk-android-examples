@@ -49,7 +49,7 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha22"
     implementation 'com.github.google:cameraview:68947cc'
 
-    implementation 'io.cobrowse:cobrowse-sdk-android:3.6.0'
+    implementation 'io.cobrowse:cobrowse-sdk-android:3.13.4'
 
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-analytics'
