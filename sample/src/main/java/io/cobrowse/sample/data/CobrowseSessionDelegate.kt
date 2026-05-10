@@ -13,10 +13,18 @@ import io.cobrowse.Session
  * Global delegate of Cobrowse.io sessions. Stores the current session and provides a way
  * to subscribe to session data updates.
  */
-object CobrowseSessionDelegate : CobrowseIO.Delegate, CobrowseIO.RedactionDelegate {
+object CobrowseSessionDelegate
+    : CobrowseIO.Delegate,
+    CobrowseIO.RedactionDelegate,
+    CobrowseIO.SessionMetricsDelegate{
 
     private val _current = MutableLiveData<Session?>()
     val current: LiveData<Session?> = _current
+
+    private val _currentLatency = MutableLiveData<Float>(0f)
+    /** Latency of the current session in milliseconds. */
+    @Suppress("unused")
+    val currentLatency: LiveData<Float> = _currentLatency
 
     override fun sessionDidUpdate(session: Session) {
         _current.value = session
@@ -24,6 +32,11 @@ object CobrowseSessionDelegate : CobrowseIO.Delegate, CobrowseIO.RedactionDelega
 
     override fun sessionDidEnd(session: Session) {
         _current.value = null
+        _currentLatency.value = 0f
+    }
+
+    override fun sessionMetricsDidUpdate(session: Session) {
+        _currentLatency.value = session.metrics().latency()
     }
 
     override fun redactedViews(activity: Activity): MutableList<View> {
