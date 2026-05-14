@@ -44,7 +44,7 @@ class CobrowseRedactionContainer : ICobrowseRedactionContainer {
     override fun collectRedactedViewsInFragments(): MutableList<View> {
         return this.fragmentsWithViews
                 .filter { it is CobrowseIO.Redacted }
-                .flatMap { (it as CobrowseIO.Redacted).redactedViews() }
+                .flatMap { (it as CobrowseIO.Redacted).redactedViews() as MutableList<View?> }
                 .filterNotNull()
                 .toMutableList()
     }
@@ -52,9 +52,8 @@ class CobrowseRedactionContainer : ICobrowseRedactionContainer {
     override fun collectUnredactedViewsInFragments(): MutableList<View> {
         return this.fragmentsWithViews
             .filter { it is CobrowseIO.Unredacted }
-            .flatMap { (it as CobrowseIO.Unredacted).unredactedViews() }
+            .flatMap { (it as CobrowseIO.Unredacted).unredactedViews() as MutableList<View?> }
             .filterNotNull()
             .toMutableList()
     }
-
 }
