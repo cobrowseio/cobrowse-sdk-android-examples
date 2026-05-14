@@ -8,7 +8,7 @@ import io.cobrowse.sample.R
 import io.cobrowse.sample.data.LoginRepository
 import io.cobrowse.sample.data.Result
 import io.cobrowse.sample.ui.BaseViewModel
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.net.URLDecoder
 
 /**
@@ -109,8 +109,8 @@ class LoginViewModel(private val loginRepository: LoginRepository) : BaseViewMod
      * Accepts URLs like `https://cbrws.io/data?firstKey=firstValue&secondKey=secondValue`
      */
     private fun updateCustomData(uri: Uri): Boolean {
-        HttpUrl.parse(uri.toString())?.let { url ->
-            val data = url.queryParameterNames().associateWith { url.queryParameter(decode(it)) }
+        uri.toString().toHttpUrlOrNull()?.let { url ->
+            val data = url.queryParameterNames.associateWith { url.queryParameter(decode(it)) }
             with(CobrowseIO.instance()) {
                 customData(data)
                 return true
@@ -125,7 +125,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : BaseViewMod
     private fun startSession(uri: Uri): Boolean {
         when (uri.pathSegments.firstOrNull()) {
             "s" -> {
-                HttpUrl.parse(uri.toString())?.let { url ->
+                uri.toString().toHttpUrlOrNull()?.let { url ->
                     url.queryParameter("id")?.let { sessionId ->
                         return startSession(decode(sessionId))
                     }
@@ -147,10 +147,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : BaseViewMod
     private fun setupForDemo(uri: Uri): Boolean {
         with(CobrowseIO.instance()) {
             stop()
-            HttpUrl.parse(uri.toString())?.let { url ->
+            uri.toString().toHttpUrlOrNull()?.let { url ->
                 url.queryParameter("api")?.let { api(decode(it)) }
                 url.queryParameter("license")?.let { license(decode(it)) }
-                url.queryParameterNames()
+                url.queryParameterNames
                     .filter { it != "api" && it != "license" }
                     .associateWith { url.queryParameter(decode(it)) }
                     .toMutableMap()
