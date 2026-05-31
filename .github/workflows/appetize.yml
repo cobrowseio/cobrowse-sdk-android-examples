@@ -55,7 +55,7 @@ jobs:
           COBROWSE_VERSION: ${{ env.COBROWSE_VERSION }}
         run: |
           curl --fail -X POST \
-            https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps \
+            https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_APP_PUBLIC_KEY \
             -F "file=@sample/build/outputs/apk/release/sample-release.apk" \
             -F "platform=android" \
             -F "note=• Commit: $GITHUB_SHA_SHORT • Based on: $COBROWSE_VERSION • Message: \"$GITHUB_COMMIT_MESSAGE\""
