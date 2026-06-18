@@ -14,18 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - uses: actions/setup-java@91d3aa4956ec4a53e477c4907347b5e3481be8c9 # v2.5.1
         with:
           distribution: 'temurin'
           java-version: '17'
+
       - name: Get latest commit information
         run: |
           echo "GITHUB_SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "GITHUB_COMMIT_MESSAGE=$(git show -s --format=%s)" >> $GITHUB_ENV
+
       - name: Find SDK version
         run: |
           echo "COBROWSE_VERSION=$(cat sample/build.gradle | grep -oP 'io\.cobrowse\:cobrowse-sdk-android\:\K([0-9]+\.[0-9]+\.[0-9]+)')" >> $GITHUB_ENV
+
       - name: Set up secrets
         env:
           COBROWSE_SAMPLE_KEYSTORE_BASE_64: ${{ secrets.COBROWSE_SAMPLE_KEYSTORE_BASE_64 }}
@@ -43,10 +47,12 @@ jobs:
           python -c "import os; import base64;  file = open('standalone/standalone.jks',            'wb');  file.write(base64.b64decode(os.environ['COBROWSE_STANDALONE_KEYSTORE_BASE_64']    ));  file.close()"
           python -c "import os;                 file = open('standalone/standalone.jks.properties', 'w');   file.write(                 os.environ['COBROWSE_STANDALONE_KEYSTORE_PROPERTIES']  );  file.close()"
           python -c "import os;                 file = open('standalone/google-services.json',      'w');   file.write(                 os.environ['COBROWSE_STANDALONE_GOOGLE_SERVICES_JSON'] );  file.close()"
+
       - name: Build the APKs
         run: |
           ./gradlew sample:assembleRelease
           ./gradlew standalone:assembleRelease
+
       - name: Upload APK to Appetize.io
         env:
           APPETIZE_API_TOKEN: ${{ secrets.AppetizeApiToken }}

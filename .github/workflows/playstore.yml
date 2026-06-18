@@ -14,14 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - uses: actions/setup-java@91d3aa4956ec4a53e477c4907347b5e3481be8c9 # v2.5.1
         with:
           distribution: 'temurin'
           java-version: '17'
+
       - name: Find SDK version
         run: |
           echo "COBROWSE_VERSION=$(cat sample/build.gradle | grep -oP 'io\.cobrowse\:cobrowse-sdk-android\:\K([0-9]+\.[0-9]+\.[0-9]+)')" >> $GITHUB_ENV
+
       - name: Set up secrets
         env:
           COBROWSE_SAMPLE_KEYSTORE_BASE_64: ${{ secrets.COBROWSE_SAMPLE_KEYSTORE_BASE_64 }}
@@ -41,18 +44,21 @@ jobs:
           python -c "import os;                 file = open('standalone/standalone.jks.properties', 'w');   file.write(                 os.environ['COBROWSE_STANDALONE_KEYSTORE_PROPERTIES']  );  file.close()"
           python -c "import os;                 file = open('standalone/google-services.json',      'w');   file.write(                 os.environ['COBROWSE_STANDALONE_GOOGLE_SERVICES_JSON'] );  file.close()"
           python -c "import os;                 file = open('service_account.json',                 'w');   file.write(                 os.environ['COBROWSE_GOOGLE_SERVICE_ACCOUNT_JSON']     );  file.close()"
+
       - name: Bump the app version code
         run: |
           COBROWSE_VERSION_CODE_OLD=$(grep "versionCode" sample/build.gradle | awk '{print $2}' | tr -d '\n')
           COBROWSE_VERSION_CODE=$((${COBROWSE_VERSION_CODE_OLD} + ${{github.run_number}}))
           sed -i "s/versionCode [0-9]\+/versionCode ${COBROWSE_VERSION_CODE}/g" sample/build.gradle
           sed -i "s/\(versionName[[:space:]]*\).*/\\1\"${COBROWSE_VERSION}\"/" sample/build.gradle
+
       - name: Build the AAB
         run: |
           ./gradlew sample:bundleRelease
+
       - name: Upload to the Play Store
         id: publish
-        uses: r0adkll/upload-google-play@v1
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
         with:
           serviceAccountJson: service_account.json
           packageName: io.cobrowse.demo
