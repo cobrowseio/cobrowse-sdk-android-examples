@@ -133,6 +133,10 @@ public class MainApplication extends MultiDexApplication
 
     @Override
     public void sessionDidUpdate(@NonNull Session session) {
+        if (customRemoteControlConsent != null && session.remoteControl() != Session.RemoteControlState.Requested) {
+            if (customRemoteControlConsent.isAdded()) customRemoteControlConsent.dismiss();
+            customRemoteControlConsent = null;
+        }
     }
 
     /*
@@ -142,13 +146,15 @@ public class MainApplication extends MultiDexApplication
 
     @Override
     public void handleRemoteControlRequest(@Nullable Activity activity, @NonNull Session session) {
-        String tag = "RemoteControlConsentDialog";
-        FragmentManager fragments = activity.getFragmentManager();
-        FragmentTransaction transaction = fragments.beginTransaction();
-        Fragment previous = fragments.findFragmentByTag(tag);
-        if (previous != null) transaction.remove(previous);
-        customRemoteControlConsent = new CustomRemoteControlConsentDialogFragment();
-        customRemoteControlConsent.show(transaction, tag);
+        if (customRemoteControlConsent == null) {
+            String tag = "RemoteControlConsentDialog";
+            FragmentManager fragments = activity.getFragmentManager();
+            FragmentTransaction transaction = fragments.beginTransaction();
+            Fragment previous = fragments.findFragmentByTag(tag);
+            if (previous != null) transaction.remove(previous);
+            customRemoteControlConsent = new CustomRemoteControlConsentDialogFragment();
+            customRemoteControlConsent.show(transaction, tag);
+        }
     }
 
     @Override
