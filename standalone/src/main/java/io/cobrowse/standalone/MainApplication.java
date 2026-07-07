@@ -3,6 +3,9 @@ package io.cobrowse.standalone;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,11 +29,15 @@ import io.cobrowse.Session;
 
 public class MainApplication extends MultiDexApplication
         implements CobrowseIO.SessionControlsDelegate,
+                   CobrowseIO.RemoteControlRequestDelegate,
                    SharedPreferences.OnSharedPreferenceChangeListener,
                    Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "MainApplication";
     private final List<Activity> createdActivities = new ArrayList<>();
+
+    // Custom consent dialog UI
+    private CustomRemoteControlConsentDialogFragment customRemoteControlConsent;
 
     @Override
     public void onCreate() {
@@ -126,10 +133,36 @@ public class MainApplication extends MultiDexApplication
 
     @Override
     public void sessionDidUpdate(@NonNull Session session) {
+        if (customRemoteControlConsent != null && session.remoteControl() != Session.RemoteControlState.Requested) {
+            if (customRemoteControlConsent.isAdded()) customRemoteControlConsent.dismiss();
+            customRemoteControlConsent = null;
+        }
+    }
+
+    /*
+     * Implement handleRemoteControlRequest(Activity, Session) from CobrowseIO.RemoteControlRequestDelegate
+     * to show a custom prompt
+     */
+
+    @Override
+    public void handleRemoteControlRequest(@Nullable Activity activity, @NonNull Session session) {
+        if (customRemoteControlConsent == null) {
+            String tag = "RemoteControlConsentDialog";
+            FragmentManager fragments = activity.getFragmentManager();
+            FragmentTransaction transaction = fragments.beginTransaction();
+            Fragment previous = fragments.findFragmentByTag(tag);
+            if (previous != null) transaction.remove(previous);
+            customRemoteControlConsent = new CustomRemoteControlConsentDialogFragment();
+            customRemoteControlConsent.show(transaction, tag);
+        }
     }
 
     @Override
     public void sessionDidEnd(@NonNull Session session) {
+        if (customRemoteControlConsent != null && customRemoteControlConsent.isAdded()) {
+            customRemoteControlConsent.dismiss();
+            customRemoteControlConsent = null;
+        }
     }
 
     //</editor-fold>
