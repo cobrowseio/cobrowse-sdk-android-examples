@@ -1,36 +1,43 @@
 package io.cobrowse.sample.compose.ui.transactions
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import io.cobrowse.sample.compose.R
 import io.cobrowse.sample.data.model.Transaction
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
-import kotlin.collections.isNotEmpty
 
 @Composable
 fun TransactionsChartScreen(
     viewModelFactory: CobrowseViewModelFactory,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val viewModel: TransactionsChartViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.uiState.collectAsState()
 
+    val horizontal = dimensionResource(R.dimen.activity_horizontal_margin)
+    val vertical = dimensionResource(R.dimen.activity_vertical_margin)
     Box(
         modifier = modifier
             .statusBarsPadding()
-            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 72.dp)
+            .padding(start = horizontal, top = vertical, end = horizontal, bottom = 0.dp)
     ) {
         when {
             uiState.isLoading -> {
@@ -56,41 +63,42 @@ fun TransactionsChartScreen(
                 }
             }
             else -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.TopCenter)
                 ) {
-                    Text(
-                        text = "Balance",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
+                    val availableHeight = this.maxHeight
+                    val threshold = 400.dp
 
-                    Text(
-                        text = String.format("$%.2f", uiState.balance),
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                            .height(if (availableHeight > threshold) threshold else availableHeight),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = stringResource(io.cobrowse.sample.core.R.string.textview_balance_header),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            text = String.format(
+                                stringResource(io.cobrowse.sample.core.R.string.transaction_amount),
+                                uiState.balance
+                            ),
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 32.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    if (uiState.recentTransactions.isNotEmpty()) {
                         TransactionsPieChart(
                             transactions = uiState.recentTransactions,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
-                        )
-                    } else {
-                        Text(
-                            text = "No transactions this month",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(32.dp)
                         )
                     }
                 }
@@ -109,67 +117,74 @@ fun TransactionsPieChart(
         .mapValues { (_, txns) -> txns.sumOf { it.amount } }
     
     val totalAmount = categoryTotals.values.sum()
-    val colors = categoryTotals.keys.map { Color(it.color) }
-    
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .padding(32.dp)
-        ) {
-            val canvasSize = size.minDimension
-            val radius = canvasSize / 2f
-            val strokeWidth = radius * 0.3f
-            val innerRadius = radius - strokeWidth
 
-            var startAngle = -90f
-            
-            categoryTotals.values.forEachIndexed { index, amount ->
-                val sweepAngle = (amount / totalAmount * 360).toFloat()
-                
-                drawArc(
-                    color = colors[index],
-                    startAngle = startAngle,
-                    sweepAngle = sweepAngle,
-                    useCenter = false,
-                    topLeft = Offset(
-                        (size.width - canvasSize) / 2f,
-                        (size.height - canvasSize) / 2f
-                    ),
-                    size = Size(canvasSize, canvasSize),
-                    style = Stroke(width = strokeWidth)
+    Box(modifier = modifier) {
+        AndroidView(
+            factory = { context ->
+                PieChart(context).apply {
+                    val transactionsDictionary = transactions
+                        .groupBy { it.category }
+                        .mapValues { next -> next.value.sumOf { it.amount } }
+                    val pieEntries = ArrayList<PieEntry>()
+                    val colors = ArrayList<Int>()
+                    for (transaction in transactionsDictionary) {
+                        colors.add(transaction.key.color)
+
+                        val icon = getDrawable(context, transaction.key.icon)
+                        icon?.setTint(android.graphics.Color.WHITE)
+                        pieEntries.add(PieEntry(transaction.value.toFloat(), icon))
+                    }
+
+                    val pieDataSet = PieDataSet(pieEntries, "type")
+                    pieDataSet.valueTextSize = 12f
+                    pieDataSet.colors = colors
+                    pieDataSet.sliceSpace = 4f
+
+                    val pieData = PieData(pieDataSet)
+                    pieData.setDrawValues(false)
+
+                    description = null
+                    legend.isEnabled = false
+                    isDrawHoleEnabled = true
+                    setHoleColor(getColor(context, android.R.color.transparent))
+                    data = pieData
+                    invalidate()
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(io.cobrowse.sample.core.R.string.total_spent_amount_header),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
                 )
-                
-                startAngle += sweepAngle
+                Text(
+                    text = String.format(stringResource(io.cobrowse.sample.core.R.string.transaction_amount), totalAmount),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(io.cobrowse.sample.core.R.string.total_spent_amount_footer),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
+                )
             }
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Spent",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = String.format("$%.2f", totalAmount),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "this month",
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }
 
+@Preview(widthDp = 720, heightDp = 600)
+@Composable
+fun TransactionsChartScreenPreview() {
+    TransactionsChartScreen(CobrowseViewModelFactory())
+}

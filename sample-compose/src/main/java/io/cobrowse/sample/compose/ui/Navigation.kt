@@ -1,9 +1,7 @@
 package io.cobrowse.sample.compose.ui
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,8 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import io.cobrowse.sample.compose.ui.account.AccountScreen
 import io.cobrowse.sample.compose.ui.login.LoginScreen
-import io.cobrowse.sample.compose.ui.login.LoginViewModel
 import io.cobrowse.sample.compose.ui.transactions.TransactionDetailScreen
+import io.cobrowse.sample.data.LoginRepository
 
 sealed class Screen(val route: String) {
     object Login : Screen("login")
@@ -30,8 +28,7 @@ fun AppNavigation(
     navController: NavHostController = rememberNavController(),
 ) {
     val viewModelFactory = CobrowseViewModelFactory()
-    val login = ViewModelProvider(owner, viewModelFactory)
-        .get(LoginViewModel::class.java)
+    val login = LoginRepository.getInstance()
 
     val startDestination = if (login.isLoggedIn) {
         Screen.Main.route
@@ -45,7 +42,7 @@ fun AppNavigation(
     ) {
         composable(Screen.Login.route) {
             LoginScreen(
-                viewModel = viewModel(factory = viewModelFactory),
+                viewModelFactory = viewModelFactory,
                 onLoginSuccess = {
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }

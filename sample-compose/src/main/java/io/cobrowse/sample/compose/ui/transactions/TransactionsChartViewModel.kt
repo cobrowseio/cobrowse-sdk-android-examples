@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 data class TransactionsChartUiState(
     val recentTransactions: List<Transaction> = emptyList(),
@@ -30,12 +29,7 @@ class TransactionsChartViewModel(private val repository: TransactionsRepository)
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
-            val allTransactions = repository.allTransactions()
-            // Get transactions from current month
-            val currentMonth = LocalDate.now()
-            val recentTransactions = allTransactions.filter {
-                it.date.year == currentMonth.year && it.date.month == currentMonth.month
-            }
+            val recentTransactions = repository.recentTransactions()
 
             val balance = (5000..15000).random().toDouble()
 
@@ -48,4 +42,3 @@ class TransactionsChartViewModel(private val repository: TransactionsRepository)
         }
     }
 }
-

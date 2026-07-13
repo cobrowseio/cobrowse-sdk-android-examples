@@ -135,7 +135,7 @@ class LoginActivity : AppCompatActivity(), CobrowseIO.Redacted {
         privacyPolicy.setOnClickListener {
             CustomTabsIntent.Builder()
                 .build()
-                .launchUrl(this, Uri.parse(getString(R.string.privacy_policy_url)))
+                .launchUrl(this, Uri.parse(getString(io.cobrowse.sample.core.R.string.privacy_policy_url)))
         }
     }
 

@@ -17,7 +17,7 @@ import io.cobrowse.sample.compose.ui.transactions.TransactionsViewModel
  */
 class CobrowseViewModelFactory : ViewModelProvider.Factory {
 
-    private val loginRepository = LoginRepository(dataSource = LoginDataSource())
+    private val loginRepository = LoginRepository.getInstance()
     private val transactionsRepository =
         TransactionsRepository(dataSource = TransactionsDataSource())
 

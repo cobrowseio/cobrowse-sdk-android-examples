@@ -29,11 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.cobrowse.sample.compose.R
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 
@@ -42,9 +44,10 @@ import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
  */
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
+    viewModelFactory: CobrowseViewModelFactory,
     onLoginSuccess: () -> Unit
 ) {
+    val viewModel: LoginViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
@@ -75,7 +78,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Please enter your details",
+                text = stringResource(io.cobrowse.sample.core.R.string.login_welcome),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )
@@ -85,12 +88,12 @@ fun LoginScreen(
             OutlinedTextField(
                 value = uiState.username,
                 onValueChange = { viewModel.onUsernameChange(it) },
-                label = { Text("Username") },
+                label = { Text(stringResource(io.cobrowse.sample.core.R.string.prompt_email)) },
                 singleLine = true,
                 isError = uiState.usernameError != null,
                 supportingText = {
                     if (uiState.usernameError != null) {
-                        Text(uiState.usernameError!!)
+                        Text(stringResource(uiState.usernameError!!))
                     }
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -104,13 +107,13 @@ fun LoginScreen(
             OutlinedTextField(
                 value = uiState.password,
                 onValueChange = { viewModel.onPasswordChange(it) },
-                label = { Text("Password") },
+                label = { Text(stringResource(io.cobrowse.sample.core.R.string.prompt_password)) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 isError = uiState.passwordError != null,
                 supportingText = {
                     if (uiState.passwordError != null) {
-                        Text(uiState.passwordError!!)
+                        Text(stringResource(uiState.passwordError!!))
                     }
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -137,14 +140,14 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Sign in")
+                    Text(stringResource(io.cobrowse.sample.core.R.string.action_sign_in))
                 }
             }
 
             if (uiState.errorMessage != null) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = uiState.errorMessage!!,
+                    text = stringResource(uiState.errorMessage!!),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -153,7 +156,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(64.dp))
 
             Text(
-                text = "Note\nAny login details will work\ne.g. \"user\" / \"password\"",
+                text = stringResource(io.cobrowse.sample.core.R.string.login_welcome_secondary),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -161,13 +164,14 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val privacy = stringResource(io.cobrowse.sample.core.R.string.privacy_policy_url)
             TextButton(
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://cobrowse.io/privacy"))
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacy))
                     context.startActivity(intent)
                 }
             ) {
-                Text("Privacy Policy")
+                Text(stringResource(io.cobrowse.sample.core.R.string.privacy_policy))
             }
         }
     }
@@ -176,6 +180,6 @@ fun LoginScreen(
 @Preview(widthDp = 1280, heightDp = 720)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(CobrowseViewModelFactory().create(LoginViewModel::class.java)) {
+    LoginScreen(CobrowseViewModelFactory()) {
     }
 }

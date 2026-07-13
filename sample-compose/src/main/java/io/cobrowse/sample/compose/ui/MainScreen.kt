@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.accompanist.web.WebView
@@ -67,7 +68,7 @@ fun MainScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.PartiallyExpanded,
-            skipHiddenState = true // Prevents dismissal
+            skipHiddenState = true
         )
     )
 
@@ -88,9 +89,12 @@ fun MainScreen(
             )
     }
 
+    // TODO make sheetPeekHeight=120.dp if the available height is less that ~300.dp?
+    val sheetPeekHeight = 320.dp
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        sheetPeekHeight = 120.dp,
+        sheetPeekHeight = sheetPeekHeight,
         sheetDragHandle = {
             BottomSheetDefaults.DragHandle()
         },
@@ -117,7 +121,7 @@ fun MainScreen(
                         when (destination) {
                             is BottomSheetDestination.TransactionsList -> {
                                 SheetTopBar(
-                                    title = "Transactions",
+                                    title = stringResource(io.cobrowse.sample.core.R.string.fragment_transaction),
                                     showBackButton = false,
                                     onBack = {}
                                 )
@@ -198,7 +202,7 @@ fun MainScreen(
                 }) {
                     Icon(
                         Icons.Default.AccountCircle,
-                        contentDescription = "Account",
+                        contentDescription = stringResource(io.cobrowse.sample.core.R.string.menu_item_account),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }

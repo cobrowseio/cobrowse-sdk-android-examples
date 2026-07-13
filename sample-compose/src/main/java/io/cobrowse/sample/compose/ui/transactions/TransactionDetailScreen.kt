@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 
@@ -20,7 +21,7 @@ fun TransactionDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Transaction") },
+                title = { Text(stringResource(io.cobrowse.sample.core.R.string.fragment_transaction_webview)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")

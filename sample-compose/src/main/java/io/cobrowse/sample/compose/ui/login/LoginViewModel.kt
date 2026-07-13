@@ -14,12 +14,14 @@ data class LoginUiState(
     val password: String = "",
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = false,
-    val errorMessage: String? = null,
-    val usernameError: String? = null,
-    val passwordError: String? = null
+    val errorMessage: Int? = null,
+    val usernameError: Int? = null,
+    val passwordError: Int? = null
 )
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(
+    private val loginRepository: LoginRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
@@ -29,14 +31,14 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     fun onUsernameChange(username: String) {
         _uiState.value = _uiState.value.copy(
             username = username,
-            usernameError = if (username.isBlank()) "Username cannot be empty" else null
+            usernameError = if (username.isBlank()) io.cobrowse.sample.core.R.string.invalid_username else null
         )
     }
 
     fun onPasswordChange(password: String) {
         _uiState.value = _uiState.value.copy(
             password = password,
-            passwordError = if (password.isEmpty()) "Password cannot be empty" else null
+            passwordError = if (password.isEmpty()) io.cobrowse.sample.core.R.string.invalid_password else null
         )
     }
 
@@ -46,8 +48,8 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
         if (username.isBlank() || password.isEmpty()) {
             _uiState.value = _uiState.value.copy(
-                usernameError = if (username.isBlank()) "Username cannot be empty" else null,
-                passwordError = if (password.isEmpty()) "Password cannot be empty" else null
+                usernameError = if (username.isBlank()) io.cobrowse.sample.core.R.string.invalid_username else null,
+                passwordError = if (password.isEmpty()) io.cobrowse.sample.core.R.string.invalid_password else null
             )
             return
         }
@@ -68,7 +70,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
                 is Result.Error -> {
                     _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = "Login failed"
+                        errorMessage = io.cobrowse.sample.core.R.string.login_failed
                     )
                 }
             }
