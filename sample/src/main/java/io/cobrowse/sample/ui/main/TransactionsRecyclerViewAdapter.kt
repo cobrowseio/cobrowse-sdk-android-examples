@@ -10,6 +10,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.cobrowse.CobrowseIO
 import io.cobrowse.sample.R
+import io.cobrowse.sample.data.TransactionDrawables
 import io.cobrowse.sample.data.model.Transaction
 import io.cobrowse.sample.data.model.subtitle
 import io.cobrowse.sample.data.model.transactionGroupHeader
@@ -34,7 +35,7 @@ class TransactionsRecyclerViewAdapter(private val values: List<ListItem>)
     /**
      * A simple and naive drawable cache.
      */
-    private val drawables = HashMap<Int, Drawable?>()
+    private val drawables = TransactionDrawables()
 
     private var onTransactionSelected: ((Transaction) -> Unit) = {}
 
@@ -86,22 +87,6 @@ class TransactionsRecyclerViewAdapter(private val values: List<ListItem>)
 
     override fun getItemCount(): Int = values.size
 
-    private fun getDrawable(context: Context,
-                            category: Transaction.Category): Drawable? =
-        getDrawable(context, category.icon, category.color)
-
-    private fun getDrawable(context: Context,
-                            drawableId: Int,
-                            tintColor: Int): Drawable? {
-        if (drawables.contains(drawableId)) {
-            return drawables[drawableId]
-        }
-        return ContextCompat.getDrawable(context, drawableId)?.also {
-            DrawableCompat.setTint(it, tintColor)
-            drawables[drawableId] = it
-        }
-    }
-
     inner class MonthAndYearViewHolder(val binding: CellTransactionMonthBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun rebind(item: MonthAndYearItem) {
@@ -114,7 +99,7 @@ class TransactionsRecyclerViewAdapter(private val values: List<ListItem>)
         fun rebind(item: TransactionItem) {
             binding.root.context.let { context ->
                 binding.imageviewTransactionLogo.setImageDrawable(
-                    getDrawable(context, item.transaction.category))
+                    drawables.getDrawable(context, item.transaction.category))
                 binding.textviewTransactionName.text = item.transaction.title
                 binding.textviewTransactionDate.text = item.transaction.subtitle(context)
                 binding.textviewTransactionAmount.text =

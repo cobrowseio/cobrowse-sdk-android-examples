@@ -1,27 +1,77 @@
 package io.cobrowse.sample.compose.ui
 
-import androidx.compose.animation.*
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.util.Log
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
-import io.cobrowse.sample.data.model.detailsUrl
 import io.cobrowse.sample.compose.ui.transactions.TransactionsChartScreen
 import io.cobrowse.sample.compose.ui.transactions.TransactionsScreen
+import io.cobrowse.sample.data.model.detailsUrl
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
+private const val TAG = "MainScreen"
 
 private sealed class BottomSheetDestination {
     object TransactionsList : BottomSheetDestination()
@@ -45,7 +95,7 @@ private fun SheetTopBar(
                 IconButton(onClick = onBack) {
                     Icon(
                         Icons.Default.ArrowBack,
-                        contentDescription = "Back to transactions"
+                        contentDescription = stringResource(io.cobrowse.sample.compose.R.string.icon_back)
                     )
                 }
             }
@@ -71,6 +121,7 @@ fun MainScreen(
             skipHiddenState = true
         )
     )
+    val scope = rememberCoroutineScope()
 
     var bottomSheetDestination by remember {
         mutableStateOf<BottomSheetDestination>(BottomSheetDestination.TransactionsList)
@@ -130,6 +181,7 @@ fun MainScreen(
                                     viewModelFactory = viewModelFactory,
                                     onTransactionClick = { transaction ->
                                         val url = transaction.detailsUrl(context)
+                                        scope.launch { scaffoldState.bottomSheetState.expand() }
                                         bottomSheetDestination = BottomSheetDestination.TransactionDetail(url)
                                     },
                                     modifier = Modifier
@@ -141,35 +193,13 @@ fun MainScreen(
                                 SheetTopBar(
                                     title = "Transaction Detail",
                                     showBackButton = true,
-                                    onBack = { bottomSheetDestination = BottomSheetDestination.TransactionsList }
+                                    onBack = {
+                                        bottomSheetDestination = BottomSheetDestination.TransactionsList
+                                    }
                                 )
 
-                                // FIXME: mounting an android.webkit.WebView can still momentarily stall the
-                                //  main thread.
-                                var isWebViewReady by remember(destination) { mutableStateOf(false) }
-                                LaunchedEffect(destination) {
-                                    delay(32)
-                                    isWebViewReady = true
-                                }
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isWebViewReady) {
-                                        val webViewState = rememberWebViewState(url = destination.url)
-                                        WebView(
-                                            state = webViewState,
-                                            modifier = Modifier.fillMaxSize()
-                                        )
-                                        if (webViewState.isLoading) {
-                                            CircularProgressIndicator()
-                                        }
-                                    } else {
-                                        CircularProgressIndicator()
-                                    }
+                                TransactionWebViewScreen(destination) {
+                                    bottomSheetDestination = BottomSheetDestination.TransactionDetail(it.toString())
                                 }
                             }
                         }
@@ -209,4 +239,91 @@ fun MainScreen(
             }
         }
     }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+private fun ColumnScope.TransactionWebViewScreen(
+    destination: BottomSheetDestination.TransactionDetail,
+    onLinkClick: (Uri) -> Unit) {
+    // FIXME: mounting an android.webkit.WebView can still momentarily stall the
+    //  main thread.
+    var isWebViewReady by remember(destination) { mutableStateOf(false) }
+    LaunchedEffect(destination) {
+        delay(32)
+        isWebViewReady = true
+    }
+
+
+    fun Context.invokeViewIntent(uri: Uri) {
+        try {
+            startActivity(Intent.createChooser(Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = uri
+            }, null))
+        } catch (e: Exception) {
+            Log.e(TAG, "Cannot open a URI of the scheme ${uri.scheme}")
+        }
+    }
+
+    fun invokeNewWebView(uri: Uri) {
+        onLinkClick.invoke(uri)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f),
+        contentAlignment = Alignment.Center
+    ) {
+        if (isWebViewReady) {
+            val webViewState = rememberWebViewState(url = destination.url)
+            val client: AccompanistWebViewClient = remember {
+                object : AccompanistWebViewClient() {
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?
+                    ): Boolean {
+                        request?.let {
+                            when (request.url?.scheme) {
+                                "tel", "sms", "mailto" -> {
+                                    view?.context?.invokeViewIntent(request.url)
+                                    return true
+                                }
+
+                                else -> {}
+                            }
+                            if (request.isForMainFrame) {
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || !request.isRedirect) {
+                                    invokeNewWebView(request.url)
+                                    return true
+                                }
+                            }
+                        }
+                        return super.shouldOverrideUrlLoading(view, request)
+                    }
+                }
+            }
+            WebView(
+                state = webViewState,
+                modifier = Modifier.fillMaxSize(),
+                onCreated = {
+                    it.settings.javaScriptEnabled = true
+                },
+                client = client
+            )
+            if (webViewState.isLoading) {
+                CircularProgressIndicator()
+            }
+        } else {
+            CircularProgressIndicator()
+        }
+    }
+}
+
+
+@Preview(widthDp = 1280, heightDp = 720)
+@Composable
+fun MainScreenPreview() {
+    MainScreen(rememberNavController(), CobrowseViewModelFactory())
 }

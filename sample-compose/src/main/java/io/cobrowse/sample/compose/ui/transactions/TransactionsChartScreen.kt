@@ -92,7 +92,7 @@ fun TransactionsChartScreen(
                             ),
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(vertical))
 
                         TransactionsPieChart(
                             transactions = uiState.recentTransactions,
