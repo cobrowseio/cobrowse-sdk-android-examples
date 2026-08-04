@@ -5,6 +5,8 @@
 .DS_Store
 /build
 /sample/build
+/sample-compose/build
+/sample-core/build
 /captures
 .externalNativeBuild
 .cxx
