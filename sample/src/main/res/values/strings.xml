@@ -16,6 +16,17 @@
     <string name="login_welcome_secondary"><b>Note</b>\n<small>Any login details will work\ne.g. \"user\" / \"password\"</small></string>
     <string name="fragment_account_title">Account</string>
     <string name="end_cobrowse_session">Finish screensharing</string>
+    <string name="consent_allow">Allow</string>
+    <string name="consent_deny">Deny</string>
+    <string name="consent_session_heading">Cobrowse Session</string>
+    <string name="consent_session_body">A support agent is requesting access to view your screen.</string>
+    <string name="consent_session_terms">Sensitive information remains hidden. Terms &amp; Privacy Policy apply.</string>
+    <string name="consent_remote_control_heading">Remote Control</string>
+    <string name="consent_remote_control_body">By activating the remote control feature, you authorize your agent to perform actions on your behalf on your device. This includes navigating and entering information as directed by you.</string>
+    <string name="consent_remote_control_terms">Your acceptance confirms your consent to these terms and the permissions granted for remote actions.</string>
+    <string name="consent_full_device_heading">Full Device</string>
+    <string name="consent_full_device_body">By enabling full device mode, you allow your agent to view content beyond this app, including other apps and information on your device.</string>
+    <string name="consent_full_device_terms">Navigate only to apps and data you are comfortable sharing. Android will ask you to confirm before capture begins.</string>
     <string name="agent_present_welcome">Please enter your present code</string>
     <string name="fragment_agent_present_title">Agent Present</string>
     <string name="agent_present_welcome_you_are_presenting">You are now presenting</string>
