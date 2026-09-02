@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/consent_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/consentCardBackground"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/consent_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:lineHeight="21sp"
+                android:textColor="@color/consentTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Cobrowse Session" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/consent_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                app:lineHeight="21sp"
+                android:textColor="@color/consentTextColor"
+                android:textSize="16sp"
+                tools:text="A support agent is requesting access to view your screen." />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/consent_terms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:lineHeight="21sp"
+                android:textColor="@color/consentTermsTextColor"
+                android:textSize="16sp"
+                tools:text="Sensitive information remains hidden. Terms &amp; Privacy Policy apply." />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/consentDivider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/consent_deny"
+                style="@style/Theme.CobrowseioStandalone.ConsentDenyButton"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:insetBottom="0dp"
+                android:insetTop="0dp"
+                android:minHeight="0dp"
+                android:text="@string/consent_deny"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/consent_allow"
+                style="@style/Theme.CobrowseioStandalone.ConsentAllowButton"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:insetBottom="0dp"
+                android:insetTop="0dp"
+                android:minHeight="0dp"
+                android:text="@string/consent_allow"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

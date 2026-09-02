@@ -19,6 +19,13 @@
 
     <color name="ic_launcher_background">#FBF9FE</color>
 
+    <color name="consentCardBackground">#f6f6f7</color>
+    <color name="consentDivider">#eeeff1</color>
+    <color name="consentTextColor">@color/primaryTextColor</color>
+    <color name="consentTermsTextColor">#474765</color>
+    <color name="consentDenyColor">#ef4343</color>
+    <color name="consentAllowColor">@color/primaryColor</color>
+
     <color name="surface">@color/primaryBackground</color>
     <color name="onSurface">@color/primaryTextColor</color>
 </resources>
