@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Unattended Full Device</string>
+    <string name="end_session">End session</string>
+    <string name="accessibility_settings">Open accessibility settings</string>
+</resources>
