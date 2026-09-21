@@ -5,10 +5,13 @@ import android.app.Application
 import io.cobrowse.CobrowseIO
 import io.cobrowse.Session
 
+private const val CONSENT_COUNTDOWN_SECONDS = 5
+
 /**
- * Auto-approves every Cobrowse consent step so a session runs unattended.
- * The only prompt left is Android's own screen capture dialog, which the
- * OS shows each time full-device capture starts and which cannot be skipped.
+ * Runs a Cobrowse session unattended. Session consent is a countdown shown over
+ * whatever is on screen, and every other consent step is approved automatically.
+ * The only prompt left is Android's own screen capture dialog, which the SDK
+ * accepts itself while the accessibility service is running.
  */
 class DemoApplication : Application(),
     CobrowseIO.SessionLoadDelegate,
@@ -19,10 +22,13 @@ class DemoApplication : Application(),
     // Lets the foreground activity refresh when session state changes.
     var onSessionChanged: (() -> Unit)? = null
 
+    private lateinit var overlay: SessionOverlay
+
     override fun onCreate() {
         super.onCreate()
+        overlay = SessionOverlay(this)
         with(CobrowseIO.instance()) {
-            license("trial") // insert your license here
+            license("trial")
             customData(mapOf(CobrowseIO.DEVICE_NAME_KEY to "Unattended Full Device Demo"))
             this.setDelegate(this@DemoApplication)
             start()
@@ -34,10 +40,10 @@ class DemoApplication : Application(),
         onSessionChanged?.invoke()
     }
 
-    override fun handleSessionRequest(activity: Activity?, session: Session) {
-        // Automatically accept the session request - Could be replaced with a countdown UI
-        session.activate(null)
-    }
+    // Session consent is handled from sessionDidUpdate so it works while the app is in
+    // the background. The SDK only calls this delegate when an Activity is in the
+    // foreground; implementing it stops the SDK showing its own dialog or launching the app.
+    override fun handleSessionRequest(activity: Activity?, session: Session) = Unit
 
     override fun handleFullDeviceRequest(activity: Activity?, session: Session) {
         // Automatically accept the full-device consent prompt.
@@ -52,12 +58,23 @@ class DemoApplication : Application(),
     }
 
     override fun sessionDidUpdate(session: Session) {
-        // Keep remote control on for the whole session so the agent never has to request it.
-        if (session.isActive) session.setRemoteControl(Session.RemoteControlState.On, null)
+        when {
+            session.isAuthorizing -> overlay.showConsent(
+                seconds = CONSENT_COUNTDOWN_SECONDS,
+                onAccept = { session.activate(null) },
+                onDecline = { session.end(null) })
+            session.isActive -> {
+                // Keep remote control on for the whole session so the agent never has to request it.
+                session.setRemoteControl(Session.RemoteControlState.On, null)
+                overlay.showActive { session.end(null) }
+            }
+            else -> overlay.hide()
+        }
         onSessionChanged?.invoke()
     }
 
     override fun sessionDidEnd(session: Session) {
+        overlay.hide()
         onSessionChanged?.invoke()
     }
 }

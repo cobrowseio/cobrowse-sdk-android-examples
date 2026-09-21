@@ -41,6 +41,14 @@
             android:visibility="gone" />
 
         <Button
+            android:id="@+id/overlay_permission_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/overlay_permission"
+            android:visibility="gone" />
+
+        <Button
             android:id="@+id/accessibility_button"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"

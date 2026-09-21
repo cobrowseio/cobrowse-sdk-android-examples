@@ -3,4 +3,8 @@
     <string name="app_name">Unattended Full Device</string>
     <string name="end_session">End session</string>
     <string name="accessibility_settings">Open accessibility settings</string>
+    <string name="overlay_permission">Allow drawing over other apps</string>
+    <string name="session_active">Screen shared with support</string>
+    <string name="session_consent_countdown">Support is connecting in %1$d s</string>
+    <string name="decline">Decline</string>
 </resources>

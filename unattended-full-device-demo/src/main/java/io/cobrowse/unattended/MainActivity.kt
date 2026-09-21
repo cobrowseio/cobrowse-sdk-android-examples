@@ -1,6 +1,7 @@
 package io.cobrowse.unattended
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
@@ -41,6 +42,10 @@ class MainActivity : AppCompatActivity() {
             CobrowseIO.instance().currentSession()?.end { err, _ -> showError(err) }
         }
 
+        findViewById<Button>(R.id.overlay_permission_button).setOnClickListener {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+        }
+
         findViewById<Button>(R.id.accessibility_button).setOnClickListener {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
@@ -61,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         val session = CobrowseIO.instance().currentSession()
         val active = session?.takeIf { it.isActive }
         val serviceRunning = CobrowseAccessibilityService.isRunning()
+        val canDrawOverlays = SessionOverlay(this).hasPermission
 
         val sessionState = when {
             session == null -> "none, waiting for an agent to connect"
@@ -103,10 +109,15 @@ class MainActivity : AppCompatActivity() {
             "Full device" to fullDevice,
             "Remote control" to remoteControl,
             "Accessibility service" to accessibility,
+            "Session overlay" to
+                if (canDrawOverlays) "allowed, shown over other apps while a session is active"
+                else "not allowed, enable it below to show an indicator over other apps",
         ).joinToString("\n\n") { (label, value) -> "$label\n  $value" }
 
         findViewById<Button>(R.id.end_session_button).visibility =
             if (active == null) View.GONE else View.VISIBLE
+        findViewById<Button>(R.id.overlay_permission_button).visibility =
+            if (canDrawOverlays) View.GONE else View.VISIBLE
     }
 
     private fun showError(err: Error?) {
