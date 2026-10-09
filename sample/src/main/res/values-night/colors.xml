@@ -2,6 +2,12 @@
 <resources>
     <color name="primaryBackground">#171811</color>
     <color name="secondaryBackground">#131318</color>
+    <color name="consentCardBackground">#1c1c1e</color>
+    <color name="consentDivider">#38383a</color>
+    <color name="consentTextColor">#ffffff</color>
+    <color name="consentTermsTextColor">#a5a5c0</color>
+    <color name="consentDenyColor">#ff6b6b</color>
+
     <color name="surface">@color/primaryColor</color>
     <color name="onSurface">@color/secondaryTextColor</color>
 </resources>
