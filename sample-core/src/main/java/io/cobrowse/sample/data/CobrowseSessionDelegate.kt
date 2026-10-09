@@ -2,10 +2,10 @@ package io.cobrowse.sample.data
 
 import android.app.Activity
 import android.content.Context
+import android.preference.PreferenceManager
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
 import io.cobrowse.CobrowseIO
 import io.cobrowse.Session
 

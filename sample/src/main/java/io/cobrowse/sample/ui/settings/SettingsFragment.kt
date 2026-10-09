@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.cobrowse.CobrowseAccessibilityService
-import io.cobrowse.sample.R
+import io.cobrowse.sample.core.R
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
 
 /**
@@ -27,7 +27,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        setPreferencesFromResource(io.cobrowse.sample.R.xml.root_preferences, rootKey)
 
         findPreference<Preference?>("accessibilityService")?.let { button ->
             button.onPreferenceClickListener = Preference.OnPreferenceClickListener {

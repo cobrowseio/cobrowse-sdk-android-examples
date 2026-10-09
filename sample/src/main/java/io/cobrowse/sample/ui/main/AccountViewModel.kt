@@ -3,7 +3,7 @@ package io.cobrowse.sample.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import io.cobrowse.CobrowseIO
-import io.cobrowse.sample.R
+import io.cobrowse.sample.core.R
 import io.cobrowse.sample.data.LoginRepository
 import io.cobrowse.sample.data.model.LoggedInUser
 import io.cobrowse.sample.ui.BaseViewModel

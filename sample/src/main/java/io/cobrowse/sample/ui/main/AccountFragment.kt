@@ -89,7 +89,7 @@ class AccountFragment : Fragment(), CobrowseIO.Redacted  {
             activity?.let {
                 CustomTabsIntent.Builder()
                     .build()
-                    .launchUrl(it, Uri.parse(getString(R.string.privacy_policy_url)))
+                    .launchUrl(it, Uri.parse(getString(io.cobrowse.sample.core.R.string.privacy_policy_url)))
             }
         }
 

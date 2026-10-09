@@ -18,7 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
 import io.cobrowse.Session
-import io.cobrowse.sample.R
+import io.cobrowse.sample.core.R
 import io.cobrowse.sample.databinding.FragmentAgentPresentBinding
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.ui.afterTextChanged
@@ -122,7 +122,7 @@ class AgentPresentFragment : Fragment()  {
             return
         }
 
-        val shake = AnimationUtils.loadAnimation(this.context, R.anim.shake)
+        val shake = AnimationUtils.loadAnimation(this.context, io.cobrowse.sample.R.anim.shake)
         shake.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) { }
             override fun onAnimationRepeat(animation: Animation?) { }
