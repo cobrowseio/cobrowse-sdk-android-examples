@@ -5,6 +5,7 @@
 .DS_Store
 /build
 /sample/build
+/unattended-full-device-demo/build
 /captures
 .externalNativeBuild
 .cxx
