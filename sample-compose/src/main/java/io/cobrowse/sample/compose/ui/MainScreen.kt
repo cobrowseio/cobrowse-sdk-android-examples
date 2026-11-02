@@ -37,8 +37,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +65,15 @@ private sealed interface SheetDestination {
 }
 
 /**
+ * Saves the sheet's pages as the URLs of the opened transaction details, the transactions list
+ * is always the first page.
+ */
+private val SheetPagesSaver = listSaver<List<SheetDestination>, String>(
+    save = { pages -> pages.filterIsInstance<SheetDestination.TransactionDetail>().map { it.url } },
+    restore = { urls -> listOf(SheetDestination.Transactions) + urls.map(SheetDestination::TransactionDetail) }
+)
+
+/**
  * Displays the recent transactions statistics, and all transactions in a bottom sheet.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,8 +94,8 @@ fun MainScreen(
     val isSheetExpanded = sheetState.currentValue == SheetValue.Expanded
 
     // The pages opened in the bottom sheet, the last one is displayed
-    var sheetPages by remember {
-        mutableStateOf(listOf<SheetDestination>(SheetDestination.Transactions))
+    var sheetPages by rememberSaveable(stateSaver = SheetPagesSaver) {
+        mutableStateOf(listOf(SheetDestination.Transactions))
     }
 
     BackHandler(enabled = sheetPages.size > 1 || isSheetExpanded) {

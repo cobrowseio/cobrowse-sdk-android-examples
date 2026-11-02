@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -145,15 +144,9 @@ fun LoginScreen(
 
                 Button(
                     onClick = { viewModel.login() },
-                    enabled = !uiState.isLoading &&
-                            uiState.username.isNotBlank() &&
-                            uiState.password.isNotEmpty()
+                    enabled = uiState.username.isNotBlank() && uiState.password.isNotEmpty()
                 ) {
                     Text(stringResource(io.cobrowse.sample.core.R.string.action_sign_in))
-                }
-
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
                 }
 
                 uiState.errorMessage?.let {

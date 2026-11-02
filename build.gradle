@@ -26,9 +26,7 @@ allprojects {
         File propsFile
         if (project.name == 'standalone') {
             propsFile = project.file('standalone.jks.properties')
-        } else if (project.name == 'sample') {
-            propsFile = project.file('cobrowse.keystore.properties')
-        } else if  (project.name == 'sample-compose') {
+        } else if (project.name in ['sample', 'sample-compose']) {
             propsFile = project.file('cobrowse.keystore.properties')
         } else {
             return

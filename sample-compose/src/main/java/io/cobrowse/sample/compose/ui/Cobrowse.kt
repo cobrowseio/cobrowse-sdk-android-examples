@@ -4,13 +4,17 @@ import android.content.Context
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.neverEqualPolicy
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Observer
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import io.cobrowse.Session
 import io.cobrowse.sample.core.R
 import io.cobrowse.sample.data.CobrowseSessionDelegate
@@ -36,7 +40,18 @@ object RedactionByDefault {
  * The current Cobrowse.io session, if any.
  */
 @Composable
-fun rememberCobrowseSession(): State<Session?> = CobrowseSessionDelegate.current.observeAsState()
+fun rememberCobrowseSession(): State<Session?> {
+    // The SDK updates the same Session object in place, so every update has to be treated as
+    // a new value. observeAsState() would skip it because the object is equal to the old one.
+    val state = remember { mutableStateOf(CobrowseSessionDelegate.current.value, neverEqualPolicy()) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = Observer<Session?> { state.value = it }
+        CobrowseSessionDelegate.current.observe(lifecycleOwner, observer)
+        onDispose { CobrowseSessionDelegate.current.removeObserver(observer) }
+    }
+    return state
+}
 
 /**
  * A toolbar action that ends the active Cobrowse.io session. It is shown only during a session.

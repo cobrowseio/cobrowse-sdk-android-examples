@@ -75,6 +75,7 @@ fun TransactionsList(
         transactions
             .groupBy { LocalDate.of(it.date.year, it.date.month, 1) }
             .toSortedMap(compareByDescending { it })
+            .mapValues { (_, transactionsInMonth) -> transactionsInMonth.sortedByDescending { it.date } }
     }
 
     // When the list reaches the top/bottom of its content, any leftover scroll/fling would
