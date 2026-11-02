@@ -22,7 +22,7 @@ Please register an account and generate your free License Key at <https://cobrow
 
 This will associate sessions from your mobile app with your Cobrowse.io account.
 
-- [`sample`](/sample) and [`sample-compose`](/sample-compose): copy your license key, open up [`MainApplication.kt`](/sample/src/main/java/io/cobrowse/sample/MainApplication.kt) (or [`MainApplication.kt`](/sample-compose/src/main/java/io/cobrowse/sample/compose/MainApplication.kt)) and replace `trial` with your license key:
+- [`sample`](/sample) and [`sample-compose`](/sample-compose): copy your license key, open up [`sample/…/MainApplication.kt`](/sample/src/main/java/io/cobrowse/sample/MainApplication.kt) or [`sample-compose/…/MainApplication.kt`](/sample-compose/src/main/java/io/cobrowse/sample/compose/MainApplication.kt) and replace `trial` with your license key:
 
 ```kotlin
 license("trial")
