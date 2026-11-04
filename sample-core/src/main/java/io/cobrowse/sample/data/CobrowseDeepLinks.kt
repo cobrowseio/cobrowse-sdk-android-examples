@@ -66,7 +66,7 @@ object CobrowseDeepLinks {
     }
 
     /**
-     * Accepts URLs like `https://cbrws.io/data/?firstKey=firstValue&secondKey=secondValue`
+     * Accepts URLs like `https://cbrws.io/data?firstKey=firstValue&secondKey=secondValue`
      */
     private fun updateCustomData(uri: Uri): Boolean {
         uri.toString().toHttpUrlOrNull()?.let { url ->
@@ -80,7 +80,7 @@ object CobrowseDeepLinks {
     }
 
     /**
-     * Accepts URLs like `https://cbrws.io/s/?id=abc` or `https://cbrws.io/code/000000`
+     * Accepts URLs like `https://cbrws.io/s?id=abc` or `https://cbrws.io/code/000000`
      */
     private fun startSession(uri: Uri): Boolean {
         when (uri.pathSegments.firstOrNull()) {
