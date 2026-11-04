@@ -36,21 +36,6 @@ The example apps include preconfigured Firebase push notifications (FCM). To ena
 
 Refer to the [Firebase docs](https://firebase.google.com/docs/android/setup) to see how to create a new Firebase project and generate your own `google-services.json`.
 
-## Deep links
-
-[`sample`](/sample) and [`sample-compose`](/sample-compose) open these links (values URL-encoded):
-
-- `https://cbrws.io/api/https%3A%2F%2Fcobrowse.io` - set the API
-- `https://cbrws.io/license/trial` - set the license key
-- `https://cbrws.io/data/?key=value` - set custom data
-- `https://cbrws.io/code/000000` - join a session by code
-- `https://cbrws.io/s/?id=abc` - join a session by ID
-- `https://cbrws.io/demo/someDemoId?api=...&license=...` - log in and set up a demo
-
-```shell
-adb shell 'am start -a android.intent.action.VIEW -d "https://cbrws.io/license/trial" io.cobrowse.demo.compose'
-```
-
 ## Try it out
 
 Once you have the app running in the Android emulator or on a physical device, navigate to <https://cobrowse.io/dashboard> to see your device listed. You can click the "Connect" button to initiate a Cobrowse session!

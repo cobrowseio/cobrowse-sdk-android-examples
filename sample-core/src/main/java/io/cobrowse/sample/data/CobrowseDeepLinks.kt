@@ -6,7 +6,12 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.net.URLDecoder
 
 /**
- * Applies `https://cbrws.io/...` deep links to the Cobrowse.io SDK.
+ * Applies `https://cbrws.io/...` deep links to the Cobrowse.io SDK. Values are URL-encoded.
+ *
+ * To open a link with adb:
+ * ```
+ * adb shell 'am start -a android.intent.action.VIEW -d "https://cbrws.io/license/trial" io.cobrowse.demo.compose'
+ * ```
  */
 object CobrowseDeepLinks {
 
@@ -61,7 +66,7 @@ object CobrowseDeepLinks {
     }
 
     /**
-     * Accepts URLs like `https://cbrws.io/data?firstKey=firstValue&secondKey=secondValue`
+     * Accepts URLs like `https://cbrws.io/data/?firstKey=firstValue&secondKey=secondValue`
      */
     private fun updateCustomData(uri: Uri): Boolean {
         uri.toString().toHttpUrlOrNull()?.let { url ->
@@ -75,7 +80,7 @@ object CobrowseDeepLinks {
     }
 
     /**
-     * Accepts URLs like `https://cbrws.io/s?id=abc` or `https://cbrws.io/code/000000`
+     * Accepts URLs like `https://cbrws.io/s/?id=abc` or `https://cbrws.io/code/000000`
      */
     private fun startSession(uri: Uri): Boolean {
         when (uri.pathSegments.firstOrNull()) {
