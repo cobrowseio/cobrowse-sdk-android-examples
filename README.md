@@ -36,6 +36,25 @@ The example apps include preconfigured Firebase push notifications (FCM). To ena
 
 Refer to the [Firebase docs](https://firebase.google.com/docs/android/setup) to see how to create a new Firebase project and generate your own `google-services.json`.
 
+## Deep links
+
+The [`sample`](/sample) and [`sample-compose`](/sample-compose) apps can be configured with `https://cbrws.io/...` links, handled by [`CobrowseDeepLinks.kt`](/sample-core/src/main/java/io/cobrowse/sample/data/CobrowseDeepLinks.kt):
+
+- `https://cbrws.io/api/https%3A%2F%2Fcobrowse.io` - sets the Cobrowse.io API
+- `https://cbrws.io/license/trial` - sets the license key
+- `https://cbrws.io/data/?firstKey=firstValue&secondKey=secondValue` - sets custom data
+- `https://cbrws.io/code/000000` - starts a session by its 6-digit code
+- `https://cbrws.io/s/?id=abc` - starts a session by its ID
+- `https://cbrws.io/demo/someDemoId?api=https%3A%2F%2Fcobrowse.io&license=trial` - sets up a demo and logs in. `api`, `license` and the other query parameters are optional, and the other parameters are set as custom data
+
+The values in the path and the query must be URL-encoded. To open a link with adb, name the app's package, `io.cobrowse.demo` or `io.cobrowse.demo.compose`:
+
+```shell
+adb shell 'am start -a android.intent.action.VIEW -d "https://cbrws.io/license/trial" io.cobrowse.demo.compose'
+```
+
+`cbrws.io` links are verified for the `sample` app only. To open them in `sample-compose` from other apps, enable "Open supported links" in its app settings.
+
 ## Try it out
 
 Once you have the app running in the Android emulator or on a physical device, navigate to <https://cobrowse.io/dashboard> to see your device listed. You can click the "Connect" button to initiate a Cobrowse session!
