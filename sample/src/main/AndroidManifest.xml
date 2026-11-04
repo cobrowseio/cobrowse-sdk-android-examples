@@ -65,7 +65,9 @@
                 <data android:host="cbrws.io"/>
                 <data android:pathPattern="/api/.*"/>
                 <data android:pathPattern="/license/.*"/>
+                <data android:path="/data"/>
                 <data android:pathPattern="/data/.*"/>
+                <data android:path="/s"/>
                 <data android:pathPattern="/s/.*"/>
                 <data android:pathPattern="/code/.*"/>
                 <data android:pathPattern="/demo/.*"/>
