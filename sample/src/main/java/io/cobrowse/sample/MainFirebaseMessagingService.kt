@@ -71,7 +71,7 @@ class MainFirebaseMessagingService : FirebaseMessagingService() {
         manager.notify(0 /* ID of notification */, builder.build())
     }
 
-    override fun onNewToken(token: String) {
-        CobrowseIO.instance().setDeviceToken(token)
+    override fun onRegistered(installationId: String) {
+        CobrowseIO.instance().setDeviceToken(installationId)
     }
 }

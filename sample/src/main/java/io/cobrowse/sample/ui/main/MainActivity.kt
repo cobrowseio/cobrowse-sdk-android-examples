@@ -2,6 +2,7 @@ package io.cobrowse.sample.ui.main
 
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
@@ -10,14 +11,19 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.ActionMenuView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.MenuProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.postDelayed
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -85,6 +91,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Light status bar icons over the status bar background view
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -92,6 +100,7 @@ class MainActivity : AppCompatActivity(),
         navHostFragmentMain = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navHostFragmentBottomSheet = supportFragmentManager.findFragmentById(R.id.bottom_sheet_nav_host_fragment) as NavHostFragment
         setContentView(binding.root)
+        setUpWindowInsets()
 
         viewModel = ViewModelProvider(this, CobrowseViewModelFactory())
             .get(MainViewModel::class.java)
@@ -119,6 +128,20 @@ class MainActivity : AppCompatActivity(),
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt("bottomSheetBehaviorState", bottomSheetBehavior.state)
+    }
+
+    private fun setUpWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainContent) { view, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            view.updatePadding(left = bars.left, top = bars.top, right = bars.right, bottom = bars.bottom)
+            // The status bar color can't be set when drawing edge-to-edge, so a view is drawn behind it.
+            // A display cutout can be taller than the status bar.
+            binding.statusBarBackground.updateLayoutParams { height = bars.top }
+            // The bottom sheet behavior applies the other insets to the bottom sheet on its own
+            bottomSheetBehavior.expandedOffset = bars.top
+            insets
+        }
     }
 
     private fun setUpMenu() {
@@ -284,7 +307,7 @@ class MainActivity : AppCompatActivity(),
                     .build())
                     .apply {
                         tintList = ColorStateList.valueOf(
-                            this@MainActivity.getThemeColor(com.google.android.material.R.attr.colorPrimary))
+                            this@MainActivity.getThemeColor(androidx.appcompat.R.attr.colorPrimary))
                     }
             }
             supportActionBar?.setDisplayShowTitleEnabled(false)

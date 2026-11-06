@@ -6,12 +6,12 @@ if (project.file("google-services.json").exists()) {
 
 android {
     namespace 'io.cobrowse.standalone'
+    compileSdk 37
 
     defaultConfig {
         applicationId "io.cobrowse.standalone"
-        minSdkVersion 19
-        compileSdk 33
-        targetSdkVersion 33
+        minSdk 19
+        targetSdk 37
         versionCode 1
         versionName "1.0"
 
@@ -35,6 +35,8 @@ android {
 dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.6.0'
+    // 1.2.0 closes the drawer on back via OnBackInvokedCallback, required by predictive back (API 36+)
+    implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -49,11 +51,12 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha22"
     implementation 'com.github.google:cameraview:68947cc'
 
-    implementation 'io.cobrowse:cobrowse-sdk-android:3.13.4'
+    implementation 'io.cobrowse:cobrowse-sdk-android:3.19.1'
 
-    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    // The latest Firebase BoM to support API 19
+    implementation platform('com.google.firebase:firebase-bom:32.8.1')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation 'com.google.firebase:firebase-messaging'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     testImplementation 'junit:junit:4.13.2'

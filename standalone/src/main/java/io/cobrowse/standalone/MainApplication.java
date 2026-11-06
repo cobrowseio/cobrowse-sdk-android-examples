@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.multidex.MultiDexApplication;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +51,8 @@ public class MainApplication extends MultiDexApplication
         CobrowseIO.instance().start();
 
         if (FirebaseApp.getApps(this).size() > 0) {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult
-                    -> CobrowseIO.instance().setDeviceToken(instanceIdResult.getToken()));
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token
+                    -> CobrowseIO.instance().setDeviceToken(token));
         } else {
             Log.e(TAG, "Firebase app is not initialized. Did you copy your `google-services.json` file?");
         }
@@ -93,7 +95,15 @@ public class MainApplication extends MultiDexApplication
                         current.end(null);
                     }
                 });
+        // Keep the button clear of the system bars when the activity is drawn edge-to-edge
+        ViewCompat.setOnApplyWindowInsetsListener(customControls, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
         ((ViewGroup) activity.getWindow().findViewById(android.R.id.content)).addView(customControls);
+        ViewCompat.requestApplyInsets(customControls);
     }
 
     private void removeSessionControls(@NonNull Activity activity) {

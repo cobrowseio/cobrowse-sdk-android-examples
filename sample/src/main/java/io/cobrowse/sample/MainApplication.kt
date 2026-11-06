@@ -39,12 +39,11 @@ class MainApplication : Application() {
 
         // If using Firebase Messaging to start sessions please include your own `google-services.json`
         if (FirebaseApp.getApps(this).size > 0) {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            // The Firebase installation ID is delivered to MainFirebaseMessagingService.onRegistered()
+            FirebaseMessaging.getInstance().register().addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
+                    Log.w(TAG, "FCM registration failed", task.exception)
                 }
-                CobrowseIO.instance().setDeviceToken(task.result)
             })
         } else {
             Log.w(TAG, "Firebase app is not initialized. Did you copy your `google-services.json` file?")

@@ -2,6 +2,7 @@ package io.cobrowse.sample.ui.login
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -16,6 +17,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.MenuProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import io.cobrowse.CobrowseIO
@@ -50,6 +54,19 @@ class LoginActivity : AppCompatActivity(), CobrowseIO.Redacted {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // The action bar keeps the content below the status bar, but the content is still drawn
+        // behind the navigation bar when the window is edge-to-edge (API 35+)
+        val padding = with(binding.root) { Rect(paddingLeft, paddingTop, paddingRight, paddingBottom) }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            view.updatePadding(
+                left = padding.left + bars.left,
+                right = padding.right + bars.right,
+                bottom = padding.bottom + bars.bottom)
+            insets
+        }
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -139,9 +156,9 @@ class LoginActivity : AppCompatActivity(), CobrowseIO.Redacted {
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent?.data?.let { loginViewModel.parseDeepLink(it) }
+        intent.data?.let { loginViewModel.parseDeepLink(it) }
     }
 
     private fun tryLogIn(username: EditText, password: EditText, loading: ProgressBar) {

@@ -43,4 +43,5 @@ Any questions at all? Please email us directly at [hello@cobrowse.io](mailto:hel
 
 ## Requirements
 
-* API version 19 (4.4 KitKat) or later
+* [`sample`](/sample): API version 24 (7.0 Nougat) or later
+* [`standalone`](/standalone): API version 19 (4.4 KitKat) or later

@@ -8,6 +8,7 @@
     tools:context=".ui.main.MainActivity">
 
     <FrameLayout
+        android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -69,9 +70,12 @@
                 tools:background="#face80"
                 tools:layout_width="100dp" />
 
+            <!-- The drag handle consumes taps to expand or collapse the bottom sheet,
+                 so it must not cover the toolbar buttons -->
             <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
         </FrameLayout>
 
         <androidx.fragment.app.FragmentContainerView
@@ -83,5 +87,12 @@
             app:navGraph="@navigation/navigation_transactions" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <!-- The window draws edge-to-edge, its height matches the status bar -->
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?attr/colorPrimaryVariant" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

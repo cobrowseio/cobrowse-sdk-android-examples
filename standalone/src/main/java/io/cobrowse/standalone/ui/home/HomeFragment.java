@@ -17,6 +17,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.cobrowse.standalone.CobrowsePreferences;
+import io.cobrowse.standalone.LocalNetwork;
 import io.cobrowse.standalone.R;
 
 public class HomeFragment extends Fragment {
@@ -54,13 +59,23 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Only one permissions request can be active at a time, so ask for all of them at once
+        List<String> permissions = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(
-                        new String[] {Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_PERMISSION_POST_NOTIFICATIONS);
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS);
             }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN
+                && LocalNetwork.isLocalUrl(CobrowsePreferences.getApi(requireContext()))) {
+            if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_LOCAL_NETWORK)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.ACCESS_LOCAL_NETWORK);
+            }
+        }
+        if (!permissions.isEmpty()) {
+            requestPermissions(permissions.toArray(new String[0]), REQUEST_PERMISSION_POST_NOTIFICATIONS);
         }
     }
 
