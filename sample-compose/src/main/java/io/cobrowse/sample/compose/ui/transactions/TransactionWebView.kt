@@ -20,8 +20,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
-import io.cobrowse.cobrowseUnredacted
 
 private const val TAG = "TransactionWebView"
 
@@ -73,9 +73,9 @@ fun TransactionWebView(
                 onRelease = { it.destroy() },
                 modifier = Modifier
                     .fillMaxSize()
-                    // The web page is visible even with redaction by default. Sensitive
-                    // elements are hidden by `CobrowseIO.webviewRedactedViews()`.
-                    .cobrowseUnredacted()
+                    // Unredacted, so the web page is visible even with redaction by default.
+                    // Sensitive elements are hidden by `CobrowseIO.webviewRedactedViews()`.
+                    .testTag("transaction_web_view")
             )
         }
         if (isLoading) {

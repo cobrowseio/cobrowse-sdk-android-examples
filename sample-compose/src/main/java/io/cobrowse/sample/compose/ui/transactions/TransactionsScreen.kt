@@ -33,13 +33,13 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.cobrowse.cobrowseRedacted
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.data.model.Transaction
 import io.cobrowse.sample.data.model.subtitle
@@ -155,16 +155,16 @@ fun TransactionItem(
             )
         },
         headlineContent = {
-            Text(transaction.title, modifier = Modifier.cobrowseRedacted())
+            Text(transaction.title, modifier = Modifier.testTag("transaction_title"))
         },
         supportingContent = {
-            Text(transaction.subtitle(context), modifier = Modifier.cobrowseRedacted())
+            Text(transaction.subtitle(context), modifier = Modifier.testTag("transaction_subtitle"))
         },
         trailingContent = {
             Text(
                 text = stringResource(io.cobrowse.sample.core.R.string.transaction_amount, transaction.amount),
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.cobrowseRedacted()
+                modifier = Modifier.testTag("transaction_amount")
             )
         },
         // The list is displayed in a bottom sheet, which has its own color

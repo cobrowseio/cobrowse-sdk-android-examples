@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import io.cobrowse.cobrowseRedacted
 import io.cobrowse.sample.compose.ui.theme.SampleComposeTheme
 import io.cobrowse.sample.data.CobrowseDeepLinks
 import io.cobrowse.sample.data.LoginRepository
@@ -36,11 +36,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             SampleComposeTheme {
                 val navController = rememberNavController().also { navController = it }
+                // With redaction by default, the root matches the "#app_redacted" selector, so
+                // everything is hidden from the agent apart from the unredacted composables
+                val rootTag = if (RedactionByDefault.isEnabled) "app_redacted" else "app"
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        // Everything is redacted, apart from the composables marked as unredacted
-                        .then(if (RedactionByDefault.isEnabled) Modifier.cobrowseRedacted() else Modifier),
+                        .testTag(rootTag),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavigation(navController)

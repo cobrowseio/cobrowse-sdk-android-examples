@@ -36,6 +36,21 @@ class MainApplication : Application() {
                 put(CobrowseIO.USER_EMAIL_KEY, "android@demo.com")
                 put(CobrowseIO.DEVICE_NAME_KEY, "Android Compose Demo")
             })
+            // Composables are matched by their Modifier.testTag(), which the Cobrowse.io
+            // Gradle plugin passes to the SDK as the id of the composable
+            redactedViews(arrayOf(
+                "#username", "#password",
+                "#account_name", "#account_email",
+                "#transaction_title", "#transaction_subtitle", "#transaction_amount",
+                "#balance", "#total_spent",
+                // The root composable, only with redaction by default
+                "#app_redacted"
+            ))
+            // Visible even with redaction by default
+            unredactedViews(arrayOf(
+                "#balance_header", "#spending_chart", "#total_spent_header", "#total_spent_footer",
+                "#transaction_web_view"
+            ))
             webviewRedactedViews(arrayOf(
                 "#title",
                 "#amount",

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
-// Adds a Cobrowse.io selector to every composable, which unredaction relies on
+// Adds a Cobrowse.io selector to every composable, with its Modifier.testTag() as the id,
+// so the redaction selectors in MainApplication can match it
 apply plugin: 'io.cobrowse.cobrowse-sdk-android-gradle-plugin'
 if (project.file("google-services.json").exists()) {
     apply plugin: 'com.google.gms.google-services'

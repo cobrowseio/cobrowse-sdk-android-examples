@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,8 +36,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.cobrowse.cobrowseRedacted
-import io.cobrowse.cobrowseUnredacted
 import io.cobrowse.sample.compose.R
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.data.model.Transaction
@@ -68,7 +67,7 @@ fun TransactionsChartScreen(
             Text(
                 text = stringResource(io.cobrowse.sample.core.R.string.textview_balance_header),
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.cobrowseUnredacted()
+                modifier = Modifier.testTag("balance_header")
             )
             Text(
                 text = stringResource(io.cobrowse.sample.core.R.string.transaction_amount, uiState.balance),
@@ -76,7 +75,7 @@ fun TransactionsChartScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(vertical = 8.dp)
-                    .cobrowseRedacted()
+                    .testTag("balance")
             )
             Spacer(modifier = Modifier.height(vertical))
 
@@ -112,7 +111,7 @@ fun TransactionsPieChart(
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .cobrowseUnredacted()
+                .testTag("spending_chart")
         ) {
             if (totalAmount <= 0.0) return@Canvas
 
@@ -174,7 +173,7 @@ fun TransactionsPieChart(
                 ),
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 6.sp, maxFontSize = 14.sp),
-                modifier = Modifier.cobrowseUnredacted()
+                modifier = Modifier.testTag("total_spent_header")
             )
             BasicText(
                 text = stringResource(io.cobrowse.sample.core.R.string.transaction_amount, totalAmount),
@@ -186,7 +185,7 @@ fun TransactionsPieChart(
                 ),
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = 28.sp),
-                modifier = Modifier.cobrowseRedacted()
+                modifier = Modifier.testTag("total_spent")
             )
             BasicText(
                 text = stringResource(io.cobrowse.sample.core.R.string.total_spent_amount_footer),
@@ -197,7 +196,7 @@ fun TransactionsPieChart(
                 ),
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 6.sp, maxFontSize = 12.sp),
-                modifier = Modifier.cobrowseUnredacted()
+                modifier = Modifier.testTag("total_spent_footer")
             )
         }
     }

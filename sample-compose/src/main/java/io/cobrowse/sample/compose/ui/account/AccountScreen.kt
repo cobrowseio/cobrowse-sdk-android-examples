@@ -21,12 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.cobrowse.cobrowseRedacted
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.compose.ui.EndSessionAction
 import io.cobrowse.sample.compose.ui.SampleTopAppBar
@@ -90,7 +90,7 @@ fun AccountScreen(
                 text = viewModel.user?.displayName.orEmpty(),
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 1,
-                modifier = Modifier.cobrowseRedacted()
+                modifier = Modifier.testTag("account_name")
             )
 
             Text(
@@ -98,7 +98,7 @@ fun AccountScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
-                modifier = Modifier.cobrowseRedacted()
+                modifier = Modifier.testTag("account_email")
             )
 
             Spacer(modifier = Modifier.weight(1f))
