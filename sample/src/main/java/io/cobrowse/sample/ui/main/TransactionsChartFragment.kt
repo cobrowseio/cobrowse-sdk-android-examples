@@ -144,7 +144,7 @@ class TransactionsChartFragment : Fragment(), CobrowseIO.Redacted, CobrowseIO.Un
 
     private fun updateBalance(balance: Double?) {
         if (balance != null)
-            binding.textviewBalance.text = getString(R.string.transaction_amount, balance)
+            binding.textviewBalance.text = getString(io.cobrowse.sample.core.R.string.transaction_amount, balance)
     }
 
     private fun updateChart(transactions: List<Transaction>) {
@@ -164,7 +164,7 @@ class TransactionsChartFragment : Fragment(), CobrowseIO.Redacted, CobrowseIO.Un
             pieEntries.add(PieEntry(transaction.value.toFloat(), icon))
         }
 
-        total.text = getString(R.string.transaction_amount, transactionsDictionary.values.sum())
+        total.text = getString(io.cobrowse.sample.core.R.string.transaction_amount, transactionsDictionary.values.sum())
 
         val pieDataSet = PieDataSet(pieEntries, "type")
         pieDataSet.valueTextSize = 12f

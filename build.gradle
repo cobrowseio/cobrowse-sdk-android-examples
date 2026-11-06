@@ -10,6 +10,8 @@ buildscript {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.10.2"
         // AGP 9 compiles Kotlin itself (built-in Kotlin), this only pins the Kotlin compiler version
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21'
+        classpath 'org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.4.21'
+        classpath 'io.cobrowse:cobrowse-sdk-android-gradle-plugin:3.19.1'
     }
 }
 
@@ -24,7 +26,7 @@ allprojects {
         File propsFile
         if (project.name == 'standalone') {
             propsFile = project.file('standalone.jks.properties')
-        } else if (project.name == 'sample') {
+        } else if (project.name in ['sample', 'sample-compose']) {
             propsFile = project.file('cobrowse.keystore.properties')
         } else {
             return

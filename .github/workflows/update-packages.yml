@@ -36,16 +36,20 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Find the latest SDK version and update build.gradle file
+      - name: Find the latest SDK version and update build.gradle files
+        env:
+          FILES_TO_UPDATE: build.gradle sample/build.gradle standalone/build.gradle sample-core/build.gradle sample-compose/build.gradle
         run: |
           COBROWSE_VERSION=$(wget -O - -o /dev/null https://raw.githubusercontent.com/cobrowseio/cobrowse-sdk-android-binary/master/io/cobrowse/cobrowse-sdk-android/maven-metadata.xml | grep -Po '(?<=<version>)([0-9\.]+(-SNAPSHOT)?)' | sort --version-sort -r| head -n 1)
-          sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" sample/build.gradle
-          sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" standalone/build.gradle
+          # The SDK, its Compose UI library and its Gradle plugin are released together
+          for FILE in $FILES_TO_UPDATE; do
+            sed -i -E "s/(io\.cobrowse:cobrowse-sdk-android(-compose-ui|-gradle-plugin)?:).*/\1${COBROWSE_VERSION}'/" $FILE
+          done
 
       # If the SDK was updated, commit the changes
       - name: Commit the changes
         env:
-          FILES_TO_COMMIT: sample/build.gradle standalone/build.gradle
+          FILES_TO_COMMIT: build.gradle sample/build.gradle standalone/build.gradle sample-core/build.gradle sample-compose/build.gradle
         run: |
           if [[ `git status --porcelain $FILES_TO_COMMIT` ]]; then
             git add $FILES_TO_COMMIT
