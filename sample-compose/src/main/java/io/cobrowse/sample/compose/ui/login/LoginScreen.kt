@@ -49,7 +49,7 @@ import io.cobrowse.sample.compose.R
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.compose.ui.EndSessionAction
 import io.cobrowse.sample.compose.ui.SampleTopAppBar
-import io.cobrowse.sample.compose.ui.openPrivacyPolicy
+import io.cobrowse.sample.core.openPrivacyPolicy
 
 /**
  * A screen with the login form.

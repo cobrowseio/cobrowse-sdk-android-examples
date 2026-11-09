@@ -1,9 +1,8 @@
-package io.cobrowse.sample.compose.ui
+package io.cobrowse.sample.core
 
 import android.content.Context
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
-import io.cobrowse.sample.core.R
 
 /**
  * Opens the privacy policy in a Custom Tab.

@@ -1,7 +1,6 @@
 package io.cobrowse.sample.ui.main
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -20,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
 import io.cobrowse.CobrowseIO
 import io.cobrowse.sample.R
+import io.cobrowse.sample.core.openPrivacyPolicy
 import io.cobrowse.sample.databinding.FragmentAccountBinding
 import io.cobrowse.sample.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.ui.ICobrowseRedactionContainer
@@ -85,13 +84,7 @@ class AccountFragment : Fragment(), CobrowseIO.Redacted  {
         }
 
         val privacyPolicy = binding.privacyPolicy
-        privacyPolicy.setOnClickListener {
-            activity?.let {
-                CustomTabsIntent.Builder()
-                    .build()
-                    .launchUrl(it, Uri.parse(getString(io.cobrowse.sample.core.R.string.privacy_policy_url)))
-            }
-        }
+        privacyPolicy.setOnClickListener { requireContext().openPrivacyPolicy() }
 
         val agentPresent = binding.agentPresentMode
         agentPresent.setOnClickListener {

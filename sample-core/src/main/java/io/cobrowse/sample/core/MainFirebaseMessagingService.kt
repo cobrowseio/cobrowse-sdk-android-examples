@@ -1,4 +1,4 @@
-package io.cobrowse.sample
+package io.cobrowse.sample.core
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,10 +12,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.cobrowse.CobrowseIO
 import io.cobrowse.sample.data.getAndroidLogTag
-import io.cobrowse.sample.ui.login.LoginActivity
 
 /**
- * Firebase messaging service.
+ * Firebase messaging service, shared by the sample apps.
  */
 class MainFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -41,28 +40,31 @@ class MainFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         // Since Android Oreo notification channel is needed.
-        val channelId = getString(io.cobrowse.sample.core.R.string.default_notification_channel_id)
+        val channelId = getString(R.string.default_notification_channel_id)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                getString(io.cobrowse.sample.core.R.string.default_notification_channel_name),
+                getString(R.string.default_notification_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT)
             manager.createNotificationChannel(channel)
         }
 
-        // Create and show a simple notification containing the received FCM message
-        val intent = Intent(this, LoginActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-                else PendingIntent.FLAG_ONE_SHOT)
+        // Create and show a simple notification containing the received FCM message, which
+        // opens the launcher activity of whichever app this service is part of
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+            ?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val pendingIntent = intent?.let {
+            PendingIntent.getActivity(
+                this,
+                0,
+                it,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                    else PendingIntent.FLAG_ONE_SHOT)
+        }
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val builder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification_cobrowse)
             .setContentTitle(notification.title)
             .setContentText(notification.body)
             .setAutoCancel(true)
