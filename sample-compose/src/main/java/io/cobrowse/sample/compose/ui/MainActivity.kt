@@ -29,8 +29,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         // The login is kept in memory only. When the process is recreated, the saved screens would
         // have no user, so they are not restored and the app starts at the login screen, like the
-        // View-based sample does
-        super.onCreate(if (loginRepository.isLoggedIn) savedInstanceState else null)
+        // View-based sample does. A configuration change keeps the process, and so the state
+        val isProcessRecreated = savedInstanceState != null && !isCreatedInThisProcess
+        isCreatedInThisProcess = true
+        super.onCreate(if (isProcessRecreated) null else savedInstanceState)
 
         if (savedInstanceState == null) {
             handleDeepLink(intent)
@@ -70,5 +72,12 @@ class MainActivity : ComponentActivity() {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
         }
+    }
+
+    private companion object {
+        /**
+         * Whether the activity has been created since the process started.
+         */
+        var isCreatedInThisProcess = false
     }
 }
