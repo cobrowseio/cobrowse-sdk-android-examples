@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +43,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.cobrowse.sample.compose.CobrowseSessionDelegate
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
@@ -67,7 +67,7 @@ fun AgentPresentScreen(
     val isPresenting = session?.isActive == true
 
     var digits by remember { mutableStateOf(List(CODE_LENGTH) { "" }) }
-    val isSubmitting by viewModel.isSubmitting.collectAsState()
+    val isSubmitting by viewModel.isSubmitting.collectAsStateWithLifecycle()
     // The boxes keep the rejected code while they shake, but can't be edited until it is cleared
     var isShaking by remember { mutableStateOf(false) }
     val focusRequesters = remember { List(CODE_LENGTH) { FocusRequester() } }

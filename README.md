@@ -14,7 +14,7 @@ You can build the example apps with Android Studio:
 - [`sample-compose`](/sample-compose) - the same app, with Jetpack Compose UI
 - [`standalone`](/standalone) - Java standalone example
 
-The `sample` and `sample-compose` apps share their data and resources through the [`sample-core`](/sample-core) library.
+The `sample` and `sample-compose` apps share their data, resources, deep link handling and Firebase messaging service through the [`sample-core`](/sample-core) library.
 
 ## Add your license key
 
