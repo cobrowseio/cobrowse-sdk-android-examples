@@ -1,7 +1,6 @@
 package io.cobrowse.sample.compose.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -56,7 +55,7 @@ fun AppNavigation(navController: NavHostController) {
                 onSettings = { navController.navigate(Screen.Settings.route) },
                 onLogout = {
                     navController.navigate(Screen.Login.route) {
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
@@ -73,17 +72,6 @@ fun AppNavigation(navController: NavHostController) {
 
         composable(Screen.Settings.route) {
             SettingsScreen(onBack = { navController.popBackStack() })
-        }
-    }
-
-    // The login is kept in memory only. When the process is recreated, the restored back stack
-    // would show screens with no user, so go back to the login like the View-based sample does
-    LaunchedEffect(Unit) {
-        if (!LoginRepository.getInstance().isLoggedIn
-            && navController.currentDestination?.route != Screen.Login.route) {
-            navController.navigate(Screen.Login.route) {
-                popUpTo(0) { inclusive = true }
-            }
         }
     }
 }

@@ -27,7 +27,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
+        // The login is kept in memory only. When the process is recreated, the saved screens would
+        // have no user, so they are not restored and the app starts at the login screen, like the
+        // View-based sample does
+        super.onCreate(if (loginRepository.isLoggedIn) savedInstanceState else null)
 
         if (savedInstanceState == null) {
             handleDeepLink(intent)
