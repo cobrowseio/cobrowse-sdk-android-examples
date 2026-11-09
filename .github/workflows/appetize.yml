@@ -6,6 +6,7 @@ on:
     branches: [ master ]
     paths:
       - 'sample/**'
+      - 'sample-core/**'
       - 'build.gradle'
       - '.github/workflows/appetize.yml'
 
