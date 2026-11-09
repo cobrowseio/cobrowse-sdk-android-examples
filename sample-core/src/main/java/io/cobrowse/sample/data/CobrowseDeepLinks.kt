@@ -3,10 +3,10 @@ package io.cobrowse.sample.data
 import android.net.Uri
 import io.cobrowse.CobrowseIO
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import java.net.URLDecoder
 
 /**
- * Applies `https://cbrws.io/...` deep links to the Cobrowse.io SDK. Values are URL-encoded.
+ * Applies `https://cbrws.io/...` deep links to the Cobrowse.io SDK. Values are URL-encoded in
+ * the link, and decoded by [Uri] and [okhttp3.HttpUrl].
  *
  * To open a link with adb:
  * ```
@@ -42,7 +42,7 @@ object CobrowseDeepLinks {
         uri.pathSegments.drop(1).firstOrNull()?.let {
             with(CobrowseIO.instance()) {
                 stop()
-                api(decode(it))
+                api(it)
                 start()
                 return true
             }
@@ -57,7 +57,7 @@ object CobrowseDeepLinks {
         uri.pathSegments.drop(1).firstOrNull()?.let {
             with(CobrowseIO.instance()) {
                 stop()
-                license(decode(it))
+                license(it)
                 start()
                 return true
             }
@@ -70,7 +70,7 @@ object CobrowseDeepLinks {
      */
     private fun updateCustomData(uri: Uri): Boolean {
         uri.toString().toHttpUrlOrNull()?.let { url ->
-            val data = url.queryParameterNames.associateWith { url.queryParameter(decode(it)) }
+            val data = url.queryParameterNames.associateWith { url.queryParameter(it) }
             with(CobrowseIO.instance()) {
                 customData(data)
                 return true
@@ -87,7 +87,7 @@ object CobrowseDeepLinks {
             "s" -> {
                 uri.toString().toHttpUrlOrNull()?.let { url ->
                     url.queryParameter("id")?.let { sessionId ->
-                        return startSession(decode(sessionId))
+                        return startSession(sessionId)
                     }
                 }
             }
@@ -108,15 +108,15 @@ object CobrowseDeepLinks {
         with(CobrowseIO.instance()) {
             stop()
             uri.toString().toHttpUrlOrNull()?.let { url ->
-                url.queryParameter("api")?.let { api(decode(it)) }
-                url.queryParameter("license")?.let { license(decode(it)) }
+                url.queryParameter("api")?.let { api(it) }
+                url.queryParameter("license")?.let { license(it) }
                 url.queryParameterNames
                     .filter { it != "api" && it != "license" }
-                    .associateWith { url.queryParameter(decode(it)) }
+                    .associateWith { url.queryParameter(it) }
                     .toMutableMap()
                     .let {
                         uri.pathSegments.drop(1).firstOrNull()?.let { demoId ->
-                            it["demo_id"] = decode(demoId)
+                            it["demo_id"] = demoId
                         }
                         customData(it.toMap())
                     }
@@ -125,8 +125,6 @@ object CobrowseDeepLinks {
         }
         return true
     }
-
-    private fun decode(it: String?): String = URLDecoder.decode(it, "UTF-8")
 
     private fun startSession(idOrCode: String): Boolean {
         with(CobrowseIO.instance()) {
