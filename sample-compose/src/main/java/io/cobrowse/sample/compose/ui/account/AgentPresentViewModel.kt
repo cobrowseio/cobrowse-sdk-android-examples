@@ -2,12 +2,12 @@ package io.cobrowse.sample.compose.ui.account
 
 import androidx.lifecycle.ViewModel
 import io.cobrowse.CobrowseIO
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 /**
  * Starts the Agent Present mode: a "reverse" screensharing session where an agent uses this app
@@ -21,22 +21,24 @@ class AgentPresentViewModel : ViewModel() {
      */
     val isSubmitting: StateFlow<Boolean> = _isSubmitting.asStateFlow()
 
-    private val _codeRejected = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    private val _codeResults = Channel<Boolean>(Channel.BUFFERED)
     /**
-     * Emits when the present code is not accepted.
+     * Whether each submitted code was accepted. The channel keeps a result until the screen
+     * collects it, even if the screen is recreated in the meantime.
      */
-    val codeRejected: SharedFlow<Unit> = _codeRejected.asSharedFlow()
+    val codeResults: Flow<Boolean> = _codeResults.receiveAsFlow()
 
     fun initiateSession(code: String) {
-        _isSubmitting.value = true
+        // Only one code is checked at a time
+        if (!_isSubmitting.compareAndSet(expect = false, update = true)) return
+
         CobrowseIO.instance().getSession(code) { error, session ->
-            _isSubmitting.value = false
             if (error == null) {
                 // Presenting mode has been activated successfully
                 session?.setCapabilities(arrayOfNulls(0), null)
-            } else {
-                _codeRejected.tryEmit(Unit)
             }
+            _isSubmitting.value = false
+            _codeResults.trySend(error == null)
         }
     }
 }

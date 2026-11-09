@@ -76,14 +76,19 @@ fun AgentPresentScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.codeRejected.collect {
-            repeat(3) {
-                shake.animateTo(-10f, tween(70, easing = LinearEasing))
-                shake.animateTo(10f, tween(70, easing = LinearEasing))
+        viewModel.codeResults.collect { accepted ->
+            if (accepted) {
+                // The session is authorizing now, and the consent dialog takes over
+                reset()
+            } else {
+                repeat(3) {
+                    shake.animateTo(-10f, tween(70, easing = LinearEasing))
+                    shake.animateTo(10f, tween(70, easing = LinearEasing))
+                }
+                shake.animateTo(0f, tween(35, easing = LinearEasing))
+                reset()
+                focusRequesters.first().requestFocus()
             }
-            shake.animateTo(0f, tween(35, easing = LinearEasing))
-            reset()
-            focusRequesters.first().requestFocus()
         }
     }
 
@@ -93,7 +98,10 @@ fun AgentPresentScreen(
     }
 
     fun onDigitChange(index: Int, value: String) {
-        val digit = value.filter(Char::isDigit).takeLast(1)
+        val typed = value.filter(Char::isDigit)
+        // Anything but a digit is ignored, rather than erasing the digit in the box
+        if (typed.isEmpty() && value.isNotEmpty()) return
+        val digit = typed.takeLast(1)
         digits = digits.toMutableList().also { it[index] = digit }
         // The boxes can be filled in any order, so look for the next empty one
         val nextEmpty = digits.indexOfFirst { it.isEmpty() }
