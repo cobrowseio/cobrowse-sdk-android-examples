@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,13 +67,12 @@ fun AgentPresentScreen(
     val isPresenting = session?.isActive == true
 
     var digits by remember { mutableStateOf(List(CODE_LENGTH) { "" }) }
-    var isSubmitting by remember { mutableStateOf(false) }
+    val isSubmitting by viewModel.isSubmitting.collectAsState()
     val focusRequesters = remember { List(CODE_LENGTH) { FocusRequester() } }
     val shake = remember { Animatable(0f) }
 
     fun reset() {
         digits = List(CODE_LENGTH) { "" }
-        isSubmitting = false
     }
 
     LaunchedEffect(Unit) {
@@ -95,13 +95,12 @@ fun AgentPresentScreen(
     fun onDigitChange(index: Int, value: String) {
         val digit = value.filter(Char::isDigit).takeLast(1)
         digits = digits.toMutableList().also { it[index] = digit }
+        // The boxes can be filled in any order, so look for the next empty one
+        val nextEmpty = digits.indexOfFirst { it.isEmpty() }
         when {
             digit.isEmpty() -> if (index > 0) focusRequesters[index - 1].requestFocus()
-            index < CODE_LENGTH - 1 -> focusRequesters[index + 1].requestFocus()
-            digits.all { it.isNotEmpty() } -> {
-                isSubmitting = true
-                viewModel.initiateSession(digits.joinToString(""))
-            }
+            nextEmpty < 0 -> viewModel.initiateSession(digits.joinToString(""))
+            else -> focusRequesters[nextEmpty].requestFocus()
         }
     }
 

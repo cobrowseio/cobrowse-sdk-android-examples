@@ -226,6 +226,12 @@ private fun SheetTopAppBar(
 }
 
 /**
+ * Whether the notification permission has been asked for since the app started. The screen is
+ * composed again after a rotation or when coming back from another screen, but asks only once.
+ */
+private var isNotificationPermissionRequested = false
+
+/**
  * Asks for the permission to show notifications, which Firebase Cloud Messaging needs.
  */
 @Composable
@@ -235,6 +241,8 @@ private fun RequestNotificationPermission() {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
     LaunchedEffect(Unit) {
+        if (isNotificationPermissionRequested) return@LaunchedEffect
+        isNotificationPermissionRequested = true
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED) {
             launcher.launch(Manifest.permission.POST_NOTIFICATIONS)

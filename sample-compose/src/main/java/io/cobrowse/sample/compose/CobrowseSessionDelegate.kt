@@ -38,15 +38,23 @@ object CobrowseSessionDelegate : CobrowseIO.Delegate, CobrowseIO.SessionRequestD
 
     override fun handleSessionRequest(activity: Activity?, session: Session) {
         current = session
-        consentRequest = ConsentRequest.Screenshare
+        ask(ConsentRequest.Screenshare)
     }
 
     override fun handleRemoteControlRequest(activity: Activity?, session: Session) {
-        consentRequest = ConsentRequest.RemoteControl
+        ask(ConsentRequest.RemoteControl)
     }
 
     override fun handleFullDeviceRequest(activity: Activity?, session: Session) {
-        consentRequest = ConsentRequest.FullDevice
+        ask(ConsentRequest.FullDevice)
+    }
+
+    /**
+     * Like the dialog of the View-based sample, ignores a new request while another one is
+     * waiting for the user's answer, so that one is not lost.
+     */
+    private fun ask(request: ConsentRequest) {
+        if (consentRequest == null) consentRequest = request
     }
 
     /**
