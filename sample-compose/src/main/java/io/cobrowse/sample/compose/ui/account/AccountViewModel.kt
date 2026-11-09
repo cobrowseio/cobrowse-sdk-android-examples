@@ -21,12 +21,8 @@ class AccountViewModel(private val loginRepository: LoginRepository) : ViewModel
     fun requestSessionCode() {
         CobrowseIO.instance().createSession { _, session ->
             val code = session?.code()
-            _sessionCode.value = if (code.isNullOrEmpty()) {
-                ""
-            } else {
-                // We always assume the code has only 6 digits
-                "${code.substring(0, 3)} - ${code.substring(3, 6)}"
-            }
+            // Codes have 6 digits, displayed in groups of 3
+            _sessionCode.value = code.orEmpty().chunked(3).joinToString(" - ")
         }
     }
 

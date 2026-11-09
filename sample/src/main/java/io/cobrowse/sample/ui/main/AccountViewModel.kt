@@ -32,13 +32,8 @@ class AccountViewModel(private val loginRepository: LoginRepository) : BaseViewM
 
     fun requestSessionCode() {
         CobrowseIO.instance().createSession { error, session ->
-            val code = session?.code()
-            if (code.isNullOrEmpty()) {
-                _sessionCodeResult.value = ""
-            } else {
-                // We always assume the code has only 6 digits
-                _sessionCodeResult.value = "${code.substring(0, 3)} - ${code.substring(3, 6)}"
-            }
+            // Codes have 6 digits, displayed in groups of 3
+            _sessionCodeResult.value = session?.code().orEmpty().chunked(3).joinToString(" - ")
         }
     }
 }
