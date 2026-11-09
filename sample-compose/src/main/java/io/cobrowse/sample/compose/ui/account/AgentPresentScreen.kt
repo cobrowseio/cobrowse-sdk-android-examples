@@ -68,6 +68,8 @@ fun AgentPresentScreen(
 
     var digits by remember { mutableStateOf(List(CODE_LENGTH) { "" }) }
     val isSubmitting by viewModel.isSubmitting.collectAsState()
+    // The boxes keep the rejected code while they shake, but can't be edited until it is cleared
+    var isShaking by remember { mutableStateOf(false) }
     val focusRequesters = remember { List(CODE_LENGTH) { FocusRequester() } }
     val shake = remember { Animatable(0f) }
 
@@ -81,12 +83,14 @@ fun AgentPresentScreen(
                 // The session is authorizing now, and the consent dialog takes over
                 reset()
             } else {
+                isShaking = true
                 repeat(3) {
                     shake.animateTo(-10f, tween(70, easing = LinearEasing))
                     shake.animateTo(10f, tween(70, easing = LinearEasing))
                 }
                 shake.animateTo(0f, tween(35, easing = LinearEasing))
                 reset()
+                isShaking = false
                 focusRequesters.first().requestFocus()
             }
         }
@@ -162,7 +166,7 @@ fun AgentPresentScreen(
                             value = digit,
                             onValueChange = { onDigitChange(index, it) },
                             // Not disabled, so the boxes keep the focus while the code is checked
-                            readOnly = isSubmitting,
+                            readOnly = isSubmitting || isShaking,
                             singleLine = true,
                             textStyle = MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.Center),
                             placeholder = {
