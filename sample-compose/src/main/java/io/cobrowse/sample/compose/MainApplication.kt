@@ -6,9 +6,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import io.cobrowse.CobrowseIO
-import io.cobrowse.sample.compose.ui.ConsentPrompt
 import io.cobrowse.sample.compose.ui.RedactionByDefault
-import io.cobrowse.sample.data.CobrowseSessionDelegate
 import io.cobrowse.sample.data.getAndroidLogTag
 
 /**
@@ -23,11 +21,6 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        CobrowseSessionDelegate.consentPrompt = { request, _ ->
-            ConsentPrompt.request = request
-        }
-        // The root composable is redacted instead, so parts of it can be unredacted
-        CobrowseSessionDelegate.redactWindowByDefault = false
         RedactionByDefault.load(this)
 
         with(CobrowseIO.instance()) {

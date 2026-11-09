@@ -2,14 +2,12 @@ package io.cobrowse.sample
 
 import android.app.Application
 import android.util.Log
-import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import io.cobrowse.CobrowseIO
 import io.cobrowse.sample.data.CobrowseSessionDelegate
 import io.cobrowse.sample.data.getAndroidLogTag
-import io.cobrowse.sample.ui.ConsentDialogFragment
 
 /**
  * Android application class.
@@ -22,12 +20,6 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        CobrowseSessionDelegate.consentPrompt = { request, activity ->
-            (activity as? FragmentActivity)?.supportFragmentManager?.let {
-                ConsentDialogFragment.show(request, it)
-            }
-        }
 
         with(CobrowseIO.instance()) {
             license("trial")

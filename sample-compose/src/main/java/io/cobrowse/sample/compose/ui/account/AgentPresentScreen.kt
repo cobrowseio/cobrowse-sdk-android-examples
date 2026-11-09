@@ -44,10 +44,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.cobrowse.sample.compose.CobrowseSessionDelegate
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.compose.ui.EndSessionAction
 import io.cobrowse.sample.compose.ui.SampleTopAppBar
-import io.cobrowse.sample.compose.ui.rememberCobrowseSession
 import io.cobrowse.sample.core.R
 
 private const val CODE_LENGTH = 6
@@ -62,7 +62,7 @@ fun AgentPresentScreen(
     onBack: () -> Unit
 ) {
     val viewModel: AgentPresentViewModel = viewModel(factory = viewModelFactory)
-    val session by rememberCobrowseSession()
+    val session = CobrowseSessionDelegate.current
     val isPresenting = session?.isActive == true
 
     var digits by remember { mutableStateOf(List(CODE_LENGTH) { "" }) }

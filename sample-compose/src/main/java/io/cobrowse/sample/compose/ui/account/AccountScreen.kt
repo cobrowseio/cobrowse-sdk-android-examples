@@ -27,11 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.cobrowse.sample.compose.CobrowseSessionDelegate
 import io.cobrowse.sample.compose.ui.CobrowseViewModelFactory
 import io.cobrowse.sample.compose.ui.EndSessionAction
 import io.cobrowse.sample.compose.ui.SampleTopAppBar
 import io.cobrowse.sample.compose.ui.openPrivacyPolicy
-import io.cobrowse.sample.compose.ui.rememberCobrowseSession
 import io.cobrowse.sample.core.R
 
 /**
@@ -48,7 +48,7 @@ fun AccountScreen(
 ) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
     val sessionCode by viewModel.sessionCode.collectAsStateWithLifecycle()
-    val session by rememberCobrowseSession()
+    val session = CobrowseSessionDelegate.current
     val isSessionActive = session?.isActive == true
     val context = LocalContext.current
 
