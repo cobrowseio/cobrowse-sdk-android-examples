@@ -51,10 +51,16 @@ object CobrowseSessionDelegate : CobrowseIO.Delegate, CobrowseIO.SessionRequestD
 
     /**
      * Like the dialog of the View-based sample, ignores a new request while another one is
-     * waiting for the user's answer, so that one is not lost.
+     * waiting for the user's answer, so that one is not lost. A request the agent has withdrawn
+     * is replaced, though: [io.cobrowse.sample.compose.ui.ConsentDialog] clears it only when it
+     * is composed, which doesn't happen while the activity is stopped.
      */
     private fun ask(request: ConsentRequest) {
-        if (consentRequest == null) consentRequest = request
+        val waiting = consentRequest
+        val session = current
+        if (waiting == null || session == null || !waiting.isPending(session)) {
+            consentRequest = request
+        }
     }
 
     /**
