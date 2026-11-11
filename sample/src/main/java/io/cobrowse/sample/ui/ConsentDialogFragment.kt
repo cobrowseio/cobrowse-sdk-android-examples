@@ -10,7 +10,7 @@ import android.view.WindowManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import io.cobrowse.sample.R
+import io.cobrowse.sample.core.R
 import io.cobrowse.sample.data.CobrowseSessionDelegate
 import io.cobrowse.sample.data.ConsentRequest
 import io.cobrowse.sample.databinding.DialogConsentBinding
