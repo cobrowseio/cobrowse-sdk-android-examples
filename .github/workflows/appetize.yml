@@ -73,14 +73,14 @@ jobs:
 
       - name: Upload the Compose APK to Appetize.io
         env:
-          APPETIZE_API_TOKEN: ${{ secrets.AppetizeComposeApiToken }}
-          APPETIZE_APP_PUBLIC_KEY: ${{ secrets.AppetizeComposeAppPublicKey }}
+          APPETIZE_COMPOSE_API_TOKEN: ${{ secrets.AppetizeComposeApiToken }}
+          APPETIZE_COMPOSE_APP_PUBLIC_KEY: ${{ secrets.AppetizeComposeAppPublicKey }}
           GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
           GITHUB_COMMIT_MESSAGE: ${{ env.GITHUB_COMMIT_MESSAGE }}
           COBROWSE_VERSION: ${{ env.COBROWSE_VERSION }}
         run: |
           curl --fail -X POST \
-            https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_APP_PUBLIC_KEY \
+            https://$APPETIZE_COMPOSE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_COMPOSE_APP_PUBLIC_KEY \
             -F "file=@sample-compose/build/outputs/apk/release/sample-compose-release.apk" \
             -F "platform=android" \
             -F "note=• Commit: $GITHUB_SHA_SHORT • Based on: $COBROWSE_VERSION • Message: \"$GITHUB_COMMIT_MESSAGE\""
