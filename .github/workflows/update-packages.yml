@@ -36,16 +36,28 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Find the latest SDK version and update build.gradle file
+      - name: Find the latest package versions and update build.gradle files
+        env:
+          FILES_TO_UPDATE: build.gradle sample/build.gradle standalone/build.gradle sample-core/build.gradle sample-compose/build.gradle
+          PACKAGES: cobrowse-sdk-android cobrowse-sdk-android-compose-ui cobrowse-sdk-android-gradle-plugin
         run: |
-          COBROWSE_VERSION=$(wget -O - -o /dev/null https://raw.githubusercontent.com/cobrowseio/cobrowse-sdk-android-binary/master/io/cobrowse/cobrowse-sdk-android/maven-metadata.xml | grep -Po '(?<=<version>)([0-9\.]+(-SNAPSHOT)?)' | sort --version-sort -r| head -n 1)
-          sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" sample/build.gradle
-          sed -i "s/\(io\.cobrowse\:cobrowse-sdk-android\:\).*/\\1${COBROWSE_VERSION}'/" standalone/build.gradle
+          # The SDK, its Compose UI library and its Gradle plugin are released together, but each
+          # one is updated to its own latest version in case one of them is published later
+          for PACKAGE in $PACKAGES; do
+            VERSION=$(wget -O - -o /dev/null https://raw.githubusercontent.com/cobrowseio/cobrowse-sdk-android-binary/master/io/cobrowse/${PACKAGE}/maven-metadata.xml | grep -Po '(?<=<version>)([0-9\.]+(-SNAPSHOT)?)' | sort --version-sort -r | head -n 1)
+            if [[ -z "$VERSION" ]]; then
+              echo "No version found for $PACKAGE"
+              exit 1
+            fi
+            for FILE in $FILES_TO_UPDATE; do
+              sed -i -E "s/(io\.cobrowse:${PACKAGE}:).*/\1${VERSION}'/" $FILE
+            done
+          done
 
       # If the SDK was updated, commit the changes
       - name: Commit the changes
         env:
-          FILES_TO_COMMIT: sample/build.gradle standalone/build.gradle
+          FILES_TO_COMMIT: build.gradle sample/build.gradle standalone/build.gradle sample-core/build.gradle sample-compose/build.gradle
         run: |
           if [[ `git status --porcelain $FILES_TO_COMMIT` ]]; then
             git add $FILES_TO_COMMIT

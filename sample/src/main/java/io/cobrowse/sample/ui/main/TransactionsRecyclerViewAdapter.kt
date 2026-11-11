@@ -20,7 +20,7 @@ import io.cobrowse.sample.ui.main.TransactionsRecyclerViewAdapter.ListItem.Compa
 import java.time.LocalDate
 
 /**
- * [RecyclerView.Adapter] that can display a [io.cobrowse.sample.data.model.Transaction].
+ * [RecyclerView.Adapter] that can display a [Transaction].
  */
 class TransactionsRecyclerViewAdapter(private val values: List<ListItem>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
@@ -118,7 +118,7 @@ class TransactionsRecyclerViewAdapter(private val values: List<ListItem>)
                 binding.textviewTransactionName.text = item.transaction.title
                 binding.textviewTransactionDate.text = item.transaction.subtitle(context)
                 binding.textviewTransactionAmount.text =
-                    context.getString(R.string.transaction_amount, item.transaction.amount)
+                    context.getString(io.cobrowse.sample.core.R.string.transaction_amount, item.transaction.amount)
             }
 
         }

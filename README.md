@@ -11,7 +11,10 @@ This is a demo application for the [Cobrowse.io](https://cobrowse.io/) screen sh
 You can build the example apps with Android Studio:
 
 - [`sample`](/sample) - Kotlin example app
+- [`sample-compose`](/sample-compose) - the same app, with Jetpack Compose UI
 - [`standalone`](/standalone) - Java standalone example
+
+The `sample` and `sample-compose` apps share their data, resources, deep link handling and Firebase messaging service through the [`sample-core`](/sample-core) library.
 
 ## Add your license key
 
@@ -19,7 +22,7 @@ Please register an account and generate your free License Key at <https://cobrow
 
 This will associate sessions from your mobile app with your Cobrowse.io account.
 
-- [`sample`](/sample): copy your license key, open up [`MainApplication.kt`](/sample/src/main/java/io/cobrowse/sample/MainApplication.kt) and replace `trial` with your license key:
+- [`sample`](/sample) and [`sample-compose`](/sample-compose): copy your license key, open up [`sample/…/MainApplication.kt`](/sample/src/main/java/io/cobrowse/sample/MainApplication.kt) or [`sample-compose/…/MainApplication.kt`](/sample-compose/src/main/java/io/cobrowse/sample/compose/MainApplication.kt) and replace `trial` with your license key:
 
 ```kotlin
 license("trial")
@@ -29,7 +32,7 @@ license("trial")
 
 ## Firebase Cloud Messaging
 
-The example apps include preconfigured Firebase push notifications (FCM). To enable it, add your `google-services.json` to [`sample`](/sample) and [`standalone`](/standalone) modules.
+The example apps include preconfigured Firebase push notifications (FCM). To enable it, add your `google-services.json` to [`sample`](/sample), [`sample-compose`](/sample-compose) and [`standalone`](/standalone) modules.
 
 Refer to the [Firebase docs](https://firebase.google.com/docs/android/setup) to see how to create a new Firebase project and generate your own `google-services.json`.
 
@@ -43,5 +46,5 @@ Any questions at all? Please email us directly at [hello@cobrowse.io](mailto:hel
 
 ## Requirements
 
-* [`sample`](/sample): API version 24 (7.0 Nougat) or later
+* [`sample`](/sample) and [`sample-compose`](/sample-compose): API version 24 (7.0 Nougat) or later
 * [`standalone`](/standalone): API version 19 (4.4 KitKat) or later

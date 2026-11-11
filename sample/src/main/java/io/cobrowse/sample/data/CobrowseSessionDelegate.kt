@@ -33,18 +33,18 @@ object CobrowseSessionDelegate : CobrowseIO.Delegate, CobrowseIO.RedactionDelega
     override fun handleSessionRequest(activity: Activity?, session: Session) {
         _current.value = session
 
-        showConsent(ConsentDialogFragment.Request.Screenshare, activity)
+        showConsent(ConsentRequest.Screenshare, activity)
     }
 
     override fun handleRemoteControlRequest(activity: Activity?, session: Session) {
-        showConsent(ConsentDialogFragment.Request.RemoteControl, activity)
+        showConsent(ConsentRequest.RemoteControl, activity)
     }
 
     override fun handleFullDeviceRequest(activity: Activity?, session: Session) {
-        showConsent(ConsentDialogFragment.Request.FullDevice, activity)
+        showConsent(ConsentRequest.FullDevice, activity)
     }
 
-    private fun showConsent(request: ConsentDialogFragment.Request, activity: Activity?) {
+    private fun showConsent(request: ConsentRequest, activity: Activity?) {
         val manager = (activity as? FragmentActivity)?.supportFragmentManager ?: return
 
         ConsentDialogFragment.show(request, manager)

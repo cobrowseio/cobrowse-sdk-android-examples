@@ -1,4 +1,4 @@
-name: Publish the sample app to Appetize.io
+name: Publish the sample apps to Appetize.io
 
 on:
   workflow_dispatch:
@@ -6,6 +6,8 @@ on:
     branches: [ master ]
     paths:
       - 'sample/**'
+      - 'sample-compose/**'
+      - 'sample-core/**'
       - 'build.gradle'
       - '.github/workflows/appetize.yml'
 
@@ -44,6 +46,7 @@ jobs:
           python -c "import os; import base64;  file = open('sample/cobrowse.keystore',             'wb');  file.write(base64.b64decode(os.environ['COBROWSE_SAMPLE_KEYSTORE_BASE_64']        ));  file.close()"
           python -c "import os;                 file = open('sample/cobrowse.keystore.properties',  'w');   file.write(                 os.environ['COBROWSE_SAMPLE_KEYSTORE_PROPERTIES']      );  file.close()"
           python -c "import os;                 file = open('sample/google-services.json',          'w');   file.write(                 os.environ['COBROWSE_SAMPLE_GOOGLE_SERVICES_JSON']     );  file.close()"
+          cp sample/cobrowse.keystore sample/cobrowse.keystore.properties sample/google-services.json sample-compose/
           python -c "import os; import base64;  file = open('standalone/standalone.jks',            'wb');  file.write(base64.b64decode(os.environ['COBROWSE_STANDALONE_KEYSTORE_BASE_64']    ));  file.close()"
           python -c "import os;                 file = open('standalone/standalone.jks.properties', 'w');   file.write(                 os.environ['COBROWSE_STANDALONE_KEYSTORE_PROPERTIES']  );  file.close()"
           python -c "import os;                 file = open('standalone/google-services.json',      'w');   file.write(                 os.environ['COBROWSE_STANDALONE_GOOGLE_SERVICES_JSON'] );  file.close()"
@@ -51,6 +54,7 @@ jobs:
       - name: Build the APKs
         run: |
           ./gradlew sample:assembleRelease
+          ./gradlew sample-compose:assembleRelease
           ./gradlew standalone:assembleRelease
 
       - name: Upload APK to Appetize.io
@@ -64,5 +68,19 @@ jobs:
           curl --fail -X POST \
             https://$APPETIZE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_APP_PUBLIC_KEY \
             -F "file=@sample/build/outputs/apk/release/sample-release.apk" \
+            -F "platform=android" \
+            -F "note=• Commit: $GITHUB_SHA_SHORT • Based on: $COBROWSE_VERSION • Message: \"$GITHUB_COMMIT_MESSAGE\""
+
+      - name: Upload the Compose APK to Appetize.io
+        env:
+          APPETIZE_COMPOSE_API_TOKEN: ${{ secrets.AppetizeComposeApiToken }}
+          APPETIZE_COMPOSE_APP_PUBLIC_KEY: ${{ secrets.AppetizeComposeAppPublicKey }}
+          GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
+          GITHUB_COMMIT_MESSAGE: ${{ env.GITHUB_COMMIT_MESSAGE }}
+          COBROWSE_VERSION: ${{ env.COBROWSE_VERSION }}
+        run: |
+          curl --fail -X POST \
+            https://$APPETIZE_COMPOSE_API_TOKEN@api.appetize.io/v1/apps/$APPETIZE_COMPOSE_APP_PUBLIC_KEY \
+            -F "file=@sample-compose/build/outputs/apk/release/sample-compose-release.apk" \
             -F "platform=android" \
             -F "note=• Commit: $GITHUB_SHA_SHORT • Based on: $COBROWSE_VERSION • Message: \"$GITHUB_COMMIT_MESSAGE\""
