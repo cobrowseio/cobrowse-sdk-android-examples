@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload the Compose APK to Appetize.io
         env:
-          APPETIZE_API_TOKEN: ${{ secrets.AppetizeApiToken }}
+          APPETIZE_API_TOKEN: ${{ secrets.AppetizeComposeApiToken }}
           APPETIZE_APP_PUBLIC_KEY: ${{ secrets.AppetizeComposeAppPublicKey }}
           GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
           GITHUB_COMMIT_MESSAGE: ${{ env.GITHUB_COMMIT_MESSAGE }}
