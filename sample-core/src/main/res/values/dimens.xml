@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="consent_card_width">330dp</dimen>
+    <dimen name="consent_card_margin">24dp</dimen>
+</resources>

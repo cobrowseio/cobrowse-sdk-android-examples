@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.icu.text.MessageFormat
 import android.net.Uri
 import android.os.Build
-import io.cobrowse.sample.R
+import io.cobrowse.sample.core.R
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

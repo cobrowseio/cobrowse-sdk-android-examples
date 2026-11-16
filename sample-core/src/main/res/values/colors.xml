@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="consentCardBackground">#f6f6f7</color>
+    <color name="consentDivider">#eeeff1</color>
+    <color name="consentTextColor">#2b2b2b</color>
+    <color name="consentTermsTextColor">#474765</color>
+    <color name="consentDenyColor">#ef4343</color>
+    <color name="consentAllowColor">#6100ff</color>
+    <color name="consentAllowTextColor">#ffffff</color>
+</resources>

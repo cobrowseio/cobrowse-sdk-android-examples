@@ -1,3 +1,5 @@
 include ':standalone'
 rootProject.name = "Cobrowse.io Standalone"
 include ':sample'
+include ':sample-compose'
+include ':sample-core'
